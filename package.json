@@ -1,0 +1,15 @@
+{
+  "name": "Vital",
+  "description": "Código do servidor do Vital.",
+  "version": "0.0.1",
+  "maintainers": [
+    {
+      "name": "Gustavo Huffenbacher Daud",
+      "email": "gustavo@kvital.com",
+      "web": "http://www.kvital.com/gustavo"
+    } ],
+  "dependencies": 
+  {
+      "express": "4.13.3"
+  }
+}
