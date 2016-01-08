@@ -10,6 +10,12 @@
     } ],
   "dependencies": 
   {
-      "express": "4.13.3"
+      "express": "^4.13.3",
+      "mysql": "^2.10.0",   
+      "body-parser": "^1.14.2",
+      "basic-auth": "^1.0.3",
+      "fb": "^1.0.0-beta2",
+      "nodemailer": "^1.11.0",
+      "nodemailer-smtp-transport": "^1.1.0"
   }
 }
