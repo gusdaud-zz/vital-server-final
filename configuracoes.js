@@ -3,6 +3,12 @@ module.exports = {
         base:"https://localhost:8443/" 
     },
     mysql: {
+        servidor: "gusdaud.dlinkddns.com",
+        usuario: "vital",
+        senha: "job2novo",
+        database: "vital" 
+    },
+    mysql_smarter: {
         servidor: "MYSQL5006.Smarterasp.net",
         usuario: "9bdaa8_uni",
         senha: "job@novo",
