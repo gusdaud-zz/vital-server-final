@@ -49,7 +49,7 @@ function fotoUsuario(req, res) {
             //Se houver foto no facebook
             else if (rows[0].Facebook_Id != null)
                 request("http://graph.facebook.com/" + rows[0].Facebook_Id + 
-                    "/picture").pipe(res)
+                    "/picture?width=100&height=100").pipe(res)
             else
                 res.end();            
         }
