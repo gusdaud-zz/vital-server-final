@@ -13,8 +13,11 @@ function conectar() {
         password : config.mysql.senha,
         database : config.mysql.database
    });    
-   //Salva referência ao método principal
-   exports.query = _db.query; 
+}
+
+/* Para executar uma query */
+exports.query = function(sql, values, cb) {
+    return _db.query(sql, values, cb)    
 }
 
 /* Iniciar a conexão */
