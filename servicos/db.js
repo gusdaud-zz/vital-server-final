@@ -1,5 +1,5 @@
 /* Para conexão com o banco de dados */
-var config = require("./configuracoes"),
+var config = require("../configuracoes"),
     mysql = require('mysql');
 var _db = null;
 
