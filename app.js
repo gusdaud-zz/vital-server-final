@@ -56,8 +56,7 @@ function iniciarDB() {
 }
 
 /* Funções de inicialização */
-console.log(os.homedir());
-var local = os.homedir().indexOf("gustavo") > 0;
+var local = os.homedir().toLowerCase().indexOf("gustavo") > 0;
 iniciarServidor(local);
 var db = iniciarDB()
 autenticacao.iniciar(app, db, express);
