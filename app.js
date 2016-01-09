@@ -10,6 +10,7 @@ var express = require('express'),
     db = require('./servicos/db'),
     autenticacao = require('./servicos/autenticacao'),
     usuario = require('./servicos/usuario'),
+    dispositivo = require('./servicos/dispositivo'),
     bodyParser = require('body-parser'),
     app = express();
 
@@ -37,5 +38,6 @@ function iniciarServidor(local) {
 var local = os.homedir().toLowerCase().indexOf("gustavo") > 0;
 iniciarServidor(local);
 db.iniciar(app);
+dispositivo.iniciar(app, db, express);
 autenticacao.iniciar(app, db, express);
 usuario.iniciar(app, db, express);

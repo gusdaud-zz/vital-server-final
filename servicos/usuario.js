@@ -11,8 +11,8 @@ exports.iniciar = function(app, _db, express) {
     //Salva a variável
     db = _db;
     //Registra os serviços
-    app.post('/servicos/dadosusuario', dadosUsuario);
-    app.get('/servicos/fotousuario', fotoUsuario);
+    app.post('/servicos/usuario/dados', dadosUsuario);
+    app.get('/servicos/usuario/foto', fotoUsuario);
 }
 
 /* Retorna os dados do usuário */

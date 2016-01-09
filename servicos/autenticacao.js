@@ -16,13 +16,13 @@ exports.iniciar = function(app, _db, express) {
     //Salva a variável
     db = _db;
     //Registra os serviços
-    app.post('/servicos/loginemail', loginEmail);
-    app.post('/servicos/loginfacebook', loginFacebook);
-    app.post('/servicos/criarusuario', criarNovoUsuario);
-    app.post('/servicos/confirmaremail', confirmarEmail);
+    app.post('/servicos/autenticacao/email', loginEmail);
+    app.post('/servicos/autenticacao/facebook', loginFacebook);
+    app.post('/servicos/autenticacao/criarusuario', criarNovoUsuario);
+    app.post('/servicos/autenticacao/confirmaremail', confirmarEmail);
     //Pedidos que requerem o token
     app.use(requerToken);
-    app.get('/servicos/logout', logout);
+    app.get('/servicos/autenticacao/logout', logout);
     //Limpa os tokens antigos e registros sem confirmação agora e a cada hora
     setInterval(limparTokens, 1000 * 60 * 60);
     setInterval(limparRegistrosSemConfirmacao, 1000 * 60 * 60 * 6);
