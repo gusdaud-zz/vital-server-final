@@ -7,7 +7,7 @@ var express = require('express'),
     os = require('os'),
     fs = require('fs'),
     config = require("./configuracoes"),
-    mysql = require('mysql'),
+    db = require('./servicos/db'),
     autenticacao = require('./servicos/autenticacao'),
     usuario = require('./servicos/usuario'),
     bodyParser = require('body-parser'),
@@ -33,31 +33,9 @@ function iniciarServidor(local) {
     app.use(express.static('public'));
 }
 
-/* Inicia o banco de dados */
-function iniciarDB() {
-    //Cria a conexão
-   var db = mysql.createConnection({
-        host     : config.mysql.servidor,
-        user     : config.mysql.usuario,
-        password : config.mysql.senha,
-        database : config.mysql.database
-    }); 
-    
-    //Executa uma query a cada 5 segundos para manter a conexão ativa
-    setInterval(function () {
-        db.query('SELECT 1');
-    }, 5000);
-
-    //Caso tenha ocorrido algum erro
-    db.on('error', function(err) {
-        console.log("Erro com a conexão do banco de dados - " + err.code);
-    });
-    return db;
-}
-
 /* Funções de inicialização */
 var local = os.homedir().toLowerCase().indexOf("gustavo") > 0;
 iniciarServidor(local);
-var db = iniciarDB()
+db.iniciar(app);
 autenticacao.iniciar(app, db, express);
 usuario.iniciar(app, db, express);
