@@ -27,8 +27,8 @@ function atualizarDispositivo(req, res) {
     //Chama a query SQL
     db.query("INSERT INTO Dispositivo SET ?", inserir, 
         function(err, result) {
-            print(err);
-            print(result);
+            console.log(err);
+            console.log(result);
         if (err) 
             res.json({erro: "erroatualizar", detalhes: err })
         else 
