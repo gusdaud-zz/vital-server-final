@@ -36,7 +36,7 @@ function atualizarDispositivo(req, res) {
     db.query("INSERT INTO Dispositivo SET ?", inserir, 
         function(err, result) {
         if (err) 
-            res.json({erro: "erroatualizar", detalhes: err })
+            res.json({erro: "erroatualizar" })
         else 
             res.json({ok: true});
     });
