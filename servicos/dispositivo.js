@@ -9,6 +9,14 @@ exports.iniciar = function(app, _db, express) {
     db = _db;
     //Registra os serviços
     app.post('/servicos/dispositivo/atualizar', atualizarDispositivo);
+    //Agora e a cada 6 horas limpas as atualizações antigas
+    setInterval(limparAtualizacoes, 1000 * 60 * 60 * 6);
+    limparAtualizacoes();
+}
+
+/* Limpa as atualizações antigas */
+function limparAtualizacoes() {
+    db.query('DELETE FROM Dispositivo WHERE Atualizacao < (NOW() - INTERVAL 7 DAY)')
 }
 
 /* Atualiza as informações do dispositivo */
@@ -22,13 +30,11 @@ function atualizarDispositivo(req, res) {
     //Prepara o objeto de atualização
     var inserir = {Id: id};
     if (req.body.latitude) inserir.Latitude = req.body.latitude;
-    if (req.body.longitude) inserir.Latitude = req.body.longitude;
+    if (req.body.longitude) inserir.Longitude = req.body.longitude;
     if (req.body.bateria) inserir.Bateria = req.body.bateria;
     //Chama a query SQL
     db.query("INSERT INTO Dispositivo SET ?", inserir, 
         function(err, result) {
-            console.log(err);
-            console.log(result);
         if (err) 
             res.json({erro: "erroatualizar", detalhes: err })
         else 
