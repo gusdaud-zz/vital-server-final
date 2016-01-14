@@ -318,7 +318,7 @@ function loginTelefone(req, res) {
             }
         }
         else 
-            res.json({erro: "errodb" });
+            res.json({erro: "errodb", detalhes: err });
     });
 }
 
