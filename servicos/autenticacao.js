@@ -214,13 +214,7 @@ function criarNovoUsuario(req, res) {
                     else {
                         //Criado, envia email e/ou SMS de confirmação
                         enviarConfirmacao(Nome, Telefone, Email, confirmarTelefone, 
-                            confirmarEmail, Lingua, function(erro, info) {
-                            //Ocorreu um erro ao enviar o e-mail de confirmação
-                            if (erro)
-                                res.json({erro: erro })
-                            else //Tudo ocorreu bem
-                                res.json({ok: true});                        
-                        });
+                            confirmarEmail, Lingua, res.json)                
                     }
                 })
             } 
