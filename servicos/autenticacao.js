@@ -214,7 +214,7 @@ function criarNovoUsuario(req, res) {
                     else {
                         //Criado, envia email e/ou SMS de confirmação
                         enviarConfirmacao(Nome, Telefone, Email, confirmarTelefone, 
-                            confirmarEmail, Lingua, res.json)                
+                            confirmarEmail, Lingua, function(ret) { res.json(ret) })                
                     }
                 })
             } 
@@ -230,7 +230,7 @@ function enviarConfirmacao(Nome, Telefone, Email, confirmarTelefone, confirmarEm
     twilio.sendMessage({
         to:telefoneFiltrado, 
         from: config.twilio.telefone, 
-        body: traducao(Lingua, "smsconfirmacao") 
+        body: traducao(Lingua, "smsconfirmacao") + confirmarTelefone
     }, function(err, responseData) {
         //Caso tenha ocorrido um erro para enviar o sms
         if (err) 
