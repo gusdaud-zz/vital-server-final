@@ -34,6 +34,12 @@ function iniciarServidor(local) {
     app.use(express.static('public'));
 }
 
+/* Para substituir todas as ocorrências de um caractere em um string */
+String.prototype.replaceAll = function (find, replace) {
+    var str = this;
+    return str.replace(new RegExp(find, 'g'), replace);
+};
+
 /* Funções de inicialização */
 var local = os.homedir().toLowerCase().indexOf("gustavo") > 0;
 iniciarServidor(local);

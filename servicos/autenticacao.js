@@ -10,6 +10,7 @@ var fb = require('fb');
 var email = require('./email');
 var config = require("../configuracoes");
 var traducao = require("../traducao");
+var twilio = require('twilio')(config.twilio.sid, config.twilio.token);
 
 /* Inicia os serviços de autenticação */
 exports.iniciar = function(app, _db, express) {
@@ -90,7 +91,7 @@ function limparTokens() {
 }
 /* Limpa os registros sem confirmação */
 function limparRegistrosSemConfirmacao() {
-    db.query('DELETE FROM Usuario WHERE PendenteConfirmar IS NOT NULL AND Criacao < (NOW() - INTERVAL 24 HOUR)')    
+    db.query('DELETE FROM Usuario WHERE ConfirmarTelefone IS NOT NULL AND Criacao < (NOW() - INTERVAL 24 HOUR)')    
 }
 
 /* Retorna os dados do usuário */
@@ -121,7 +122,7 @@ function loginFacebook(req, res) {
             //Executa a query
             var Email = fres.email;
             var FID = fres.id;
-            db.query('SELECT Id, Facebook_Id from Usuario WHERE Email=? AND PendenteConfirmar IS NULL', 
+            db.query('SELECT Id, Facebook_Id from Usuario WHERE Email=? AND ConfirmarTelefone IS NULL', 
                 [Email], function(err, rows, fields) {
                 if (!err) {
                     if (rows.length > 0) //Se já existir a entrada
@@ -180,18 +181,19 @@ function criarNovoUsuario(req, res) {
         return;
     }
     //Valida o email
-    if ((Email != undefined && Email != "" && Email != null) && 
-        (typeof Email != "string" || !validarEmail(Email))) {
+    var usaEmail = (Email != undefined && Email != "" && Email != null)
+    if (!usaEmail) Email = null;
+    if (usaEmail && (typeof Email != "string" || !validarEmail(Email))) {
         res.json({erro: "emailinvalido" })
         return;
-    }
+    } 
     //Valida a senha
     if (typeof Senha != "string" || Senha.length < 2) {
         res.json({erro: "senhainvalida" })
         return;
     }
     //Verifica se o email está cadastrado
-    db.query("SELECT Id FROM Usuario WHERE Email=? AND PendenteConfirmar IS NULL", [Email], 
+    db.query("SELECT Id FROM Usuario WHERE Email=? AND ConfirmarTelefone IS NULL", [Email], 
         function(err, rows, fields) {
         //Se houver algum erro na verificação
         if (err) 
@@ -202,17 +204,20 @@ function criarNovoUsuario(req, res) {
                 res.json({erro: "existe" })
             else {
                 //Não existe, podemos criar
-                var pendenteConfirmar = gerarSenha(4);
-                criarUsuario(Telefone, Email, Nome, Sobrenome, Senha, null, pendenteConfirmar, function(err, result) {
+                var confirmarTelefone = gerarSenha(6, true);
+                var confirmarEmail = usaEmail ? gerarSenha(4, false) : null;
+                criarUsuario(Telefone, Email, Nome, Sobrenome, Senha, null, 
+                    confirmarTelefone, confirmarEmail, function(err, result) {
                     //Ocorreu um erro ao tentar criar
                     if (err)
                         res.json({erro: "errocriar", detalhes: err })
                     else {
-                        //Criado, envia email de confirmação
-                        enviarEmailConfirmacao(Nome, Email, pendenteConfirmar, Lingua, function(erro, info) {
+                        //Criado, envia email e/ou SMS de confirmação
+                        enviarConfirmacao(Nome, Telefone, Email, confirmarTelefone, 
+                            confirmarEmail, Lingua, function(erro, info) {
                             //Ocorreu um erro ao enviar o e-mail de confirmação
                             if (erro)
-                                res.json({erro: "erroenviaremail" })
+                                res.json({erro: erro })
                             else //Tudo ocorreu bem
                                 res.json({ok: true});                        
                         });
@@ -223,11 +228,31 @@ function criarNovoUsuario(req, res) {
     });
 }
 
-/* Envia o email de confirmação */
-function enviarEmailConfirmacao(Nome, Email, Confirmacao, Lingua, callback) {
-    email.enviarEmailTemplate(Email, traducao(Lingua, "emailconfirmacaoassunto"), traducao(Lingua, "emailconfirmacaohtml"), {Nome: Nome,
-        Link: config.vital.base + "servicos/confirmaremail?codigo=" + Confirmacao + 
-        "&lingua=" + Lingua , Codigo: Confirmacao }, callback)
+/* Envia o email e/ou SMS de confirmação */
+function enviarConfirmacao(Nome, Telefone, Email, confirmarTelefone, confirmarEmail, Lingua, callback) {
+    //Remove espaço e traço do telefone
+    var telefoneFiltrado = Telefone.replaceAll(" ", "").replaceAll("-", "");
+    //Envia o SMS
+    twilio.sendMessage({
+        to:telefoneFiltrado, 
+        from: config.twilio.telefone, 
+        body: traducao(Lingua, "smsconfirmacao") 
+    }, function(err, responseData) {
+        //Caso tenha ocorrido um erro para enviar o sms
+        if (err) 
+            callback({erro: "errosms" })
+        else {
+            //Caso o usuário tenha colocado um email
+            if (Email)
+                email.enviarEmailTemplate(Email, traducao(Lingua, "emailconfirmacaoassunto"), traducao(Lingua, "emailconfirmacaohtml"), {Nome: Nome,
+                    Link: config.vital.base + "servicos/confirmaremail?codigo=" + confirmarEmail + 
+                    "&lingua=" + Lingua , Codigo: confirmarEmail }, callback)
+            else
+                //Caso contrário retorna que tudo ocorreu bem
+                callback({ok: true })
+        }            
+    });
+    
 }
 
 /* Confirmar email */
@@ -258,22 +283,26 @@ function confirmarEmail(req, res) {
 }
 
 /* Cria um usuário */
-function criarUsuario(telefone, email, nome, sobrenome, senha, facebook_id, pendenteConfirmar, callback) {
+function criarUsuario(telefone, email, nome, sobrenome, senha, facebook_id, confirmarTelefone, confirmarEmail, callback) {
     var item = {
         Telefone: telefone,
         Email: email,
         Nome: nome,
         Sobrenome: sobrenome,
         Senha: senha,
-        PendenteConfirmar: pendenteConfirmar, 
+        ConfirmarTelefone: confirmarTelefone, 
+        ConfirmarEmail: confirmarEmail, 
         Facebook_Id: facebook_id
     };
     db.query("INSERT INTO Usuario SET ?", item, callback);
 }
 
 /* Gera uma senha aleatória */
-function gerarSenha(caracteres) {
-    return crypto.randomBytes(caracteres).toString("hex"); 
+function gerarSenha(caracteres, digitos) {
+    if (digitos == true)
+        return Math.trunc(Math.random() * Math.pow(10, caracteres))
+    else
+        return crypto.randomBytes(caracteres).toString("hex"); 
 }
 
 /* Gera um novo token */
