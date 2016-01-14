@@ -166,6 +166,7 @@ function criarNovoUsuario(req, res) {
     var Email = req.body.email;
     var Senha = req.body.senha;
     var Lingua = req.body.lingua;
+    console.log(req.body);
     //Valida o telefone
     if (typeof Telefone != "string" || Telefone.length < 2) {
         res.json({erro: "telefoneinvalido" })
