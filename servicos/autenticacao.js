@@ -95,13 +95,13 @@ function limparRegistrosSemConfirmacao() {
 
 /* Retorna os dados do usuário */
 function retornarUsuario(token, req, res) {
-    db.query('SELECT Nome, Email, Facebook_Id, Publico FROM Sessao LEFT JOIN Usuario' +
+    db.query('SELECT Nome, Sobrenome, Email, Facebook_Id, Publico FROM Sessao LEFT JOIN Usuario' +
         ' ON Sessao.Usuario = Usuario.Id  WHERE Sessao.Id=?', [token], 
         function(err, rows, fields) {
             if (!err) { 
                 if (rows.length > 0)
                     res.json({ok: true, token: token, 
-                        usuario: {Nome: rows[0].Nome, Email: rows[0].Email, Facebook_Id: rows[0].Facebook_Id},
+                        usuario: {Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, Email: rows[0].Email, Facebook_Id: rows[0].Facebook_Id},
                         publico: JSON.parse(rows[0].Publico)})
                 else
                     res.json({ erro: "errodb" })
@@ -161,6 +161,7 @@ function criarNovoUsuario(req, res) {
     //Salva as variáveis
     var Telefone = req.body.telefone;
     var Nome = req.body.nome;
+    var Sobrenome = req.body.nome;
     var Email = req.body.email;
     var Senha = req.body.senha;
     var Lingua = req.body.lingua;
@@ -174,8 +175,13 @@ function criarNovoUsuario(req, res) {
         res.json({erro: "nomeinvalido" })
         return;
     }
+    if (typeof Sobrenome != "string" || Nome.length < 2) {
+        res.json({erro: "nomeinvalido" })
+        return;
+    }
     //Valida o email
-    if ((Email != undefined) && (typeof Email != "string" || !validarEmail(Email))) {
+    if ((Email != undefined && Email != "" && Email != null) && 
+        (typeof Email != "string" || !validarEmail(Email))) {
         res.json({erro: "emailinvalido" })
         return;
     }
@@ -197,7 +203,7 @@ function criarNovoUsuario(req, res) {
             else {
                 //Não existe, podemos criar
                 var pendenteConfirmar = gerarSenha(4);
-                criarUsuario(Telefone, Email, Nome, Senha, null, pendenteConfirmar, function(err, result) {
+                criarUsuario(Telefone, Email, Nome, Sobrenome, Senha, null, pendenteConfirmar, function(err, result) {
                     //Ocorreu um erro ao tentar criar
                     if (err)
                         res.json({erro: "errocriar", detalhes: err })
@@ -252,11 +258,12 @@ function confirmarEmail(req, res) {
 }
 
 /* Cria um usuário */
-function criarUsuario(telefone, email, nome, senha, facebook_id, pendenteConfirmar, callback) {
+function criarUsuario(telefone, email, nome, sobrenome, senha, facebook_id, pendenteConfirmar, callback) {
     var item = {
         Telefone: telefone,
         Email: email,
         Nome: nome,
+        Sobrenome: sobrenome,
         Senha: senha,
         PendenteConfirmar: pendenteConfirmar, 
         Facebook_Id: facebook_id
