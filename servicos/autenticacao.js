@@ -175,7 +175,7 @@ function criarNovoUsuario(req, res) {
         return;
     }
     //Valida o email
-    if ((Email != undefined) && (typeof Email != "string" || !validarEmail(Email)) {
+    if ((Email != undefined) && (typeof Email != "string" || !validarEmail(Email))) {
         res.json({erro: "emailinvalido" })
         return;
     }
