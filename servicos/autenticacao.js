@@ -16,6 +16,7 @@ exports.iniciar = function(app, _db, express) {
     //Salva a variável
     db = _db;
     //Registra os serviços
+    app.post('/servicos/autenticacao/telefone', loginTelefone);
     app.post('/servicos/autenticacao/email', loginEmail);
     app.post('/servicos/autenticacao/facebook', loginFacebook);
     app.post('/servicos/autenticacao/criarusuario', criarNovoUsuario);
@@ -23,7 +24,8 @@ exports.iniciar = function(app, _db, express) {
     //Pedidos que requerem o token
     app.use(requerToken);
     app.get('/servicos/autenticacao/logout', logout);
-    //Limpa os tokens antigos e registros sem confirmação agora e a cada hora
+    //Limpa os tokens antigos agora e a cada 1 hora  e registros sem 
+    //confirmação agora e a cada 6 horas
     setInterval(limparTokens, 1000 * 60 * 60);
     setInterval(limparRegistrosSemConfirmacao, 1000 * 60 * 60 * 6);
     limparTokens();
@@ -157,23 +159,29 @@ function validarEmail(email) {
 /* Cria um novo usuário */
 function criarNovoUsuario(req, res) {
     //Salva as variáveis
+    var Telefone = req.body.telefone;
     var Nome = req.body.nome;
     var Email = req.body.email;
     var Senha = req.body.senha;
     var Lingua = req.body.lingua;
+    //Valida o telefone
+    if (typeof Telefone != "string" || Telefone.length < 2) {
+        res.json({erro: "telefoneinvalido" })
+        return;
+    }
     //Valida o nome
     if (typeof Nome != "string" || Nome.length < 2) {
         res.json({erro: "nomeinvalido" })
         return;
     }
     //Valida o email
-    if (typeof Email != "string" || !validarEmail(Email)) {
+    if ((Email != undefined) && (typeof Email != "string" || !validarEmail(Email)) {
         res.json({erro: "emailinvalido" })
         return;
     }
     //Valida a senha
-    if (typeof Nome != "string" || Nome.length < 2) {
-        res.json({erro: "nomeinvalido" })
+    if (typeof Senha != "string" || Senha.length < 2) {
+        res.json({erro: "senhainvalida" })
         return;
     }
     //Verifica se o email está cadastrado
@@ -189,7 +197,7 @@ function criarNovoUsuario(req, res) {
             else {
                 //Não existe, podemos criar
                 var pendenteConfirmar = gerarSenha(4);
-                criarUsuario(Email, Nome, Senha, null, pendenteConfirmar, function(err, result) {
+                criarUsuario(Telefone, Email, Nome, Senha, null, pendenteConfirmar, function(err, result) {
                     //Ocorreu um erro ao tentar criar
                     if (err)
                         res.json({erro: "errocriar", detalhes: err })
@@ -244,8 +252,9 @@ function confirmarEmail(req, res) {
 }
 
 /* Cria um usuário */
-function criarUsuario(email, nome, senha, facebook_id, pendenteConfirmar, callback) {
+function criarUsuario(telefone, email, nome, senha, facebook_id, pendenteConfirmar, callback) {
     var item = {
+        Telefone: telefone,
         Email: email,
         Nome: nome,
         Senha: senha,
@@ -272,6 +281,45 @@ function gerarToken(usuario, callback) {
     //Atualiza com a data e horário do último acesso
     db.query("UPDATE Usuario SET Acesso=NOW() WHERE Id=?", [usuario]);
 
+}
+
+/* Serviço para login com telefone, retorna token */
+function loginTelefone(req, res) {
+    //Salva telefone e senha
+    var Telefone = req.body.telefone;
+    var Senha = req.body.senha;
+    if (Telefone == "") {
+        res.json({ erro: "semtelefone" });
+        return;
+    }
+    
+    //Executa a query
+    db.query('SELECT Id, Senha from Usuario WHERE Telefone=? AND PendenteConfirmar IS NULL', [Telefone], 
+        function(err, rows, fields) {
+        if (!err) {
+            //Senha ou usuário estão incorretos
+            if (rows.length == 0) 
+                res.json({erro: "usuarionaoencontrado" })
+            //Encontrou o usuário, cria o token
+            else 
+            {
+                //Valida se a a senha está correta
+                if (rows[0].Senha != Senha) {
+                   res.json({ erro: "senhaincorreta" } );
+                   return;
+                } 
+                //Gera o token
+                gerarToken(rows[0].Id, function(err, token) {
+                    if (err) 
+                        res.json({ erro: "erroaogerartoken" } )
+                    else
+                        retornarUsuario(token, req, res)
+                });
+            }
+        }
+        else 
+            res.json({erro: "errodb" });
+    });
 }
 
 /* Serviço para login com e-mail, retorna token */
