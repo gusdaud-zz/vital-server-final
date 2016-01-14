@@ -1,23 +1,27 @@
 /* Contém traduções */
 var linguas = {
-    "en": {
+    "en-us": {
         emailconfirmacaoassunto: "Register in Vital",
         emailconfirmacaohtml: "confirmaremail-en.html",
         emailconfirmacaoerro: "There was an error while trying to confirm registration in Vital. " +
             "Please check if the confirmation hasn't being confirmed or expired.",
-        emailconfirmacaosucessohtml: "confirmaremailsucesso-en.html" 
+        emailconfirmacaosucessohtml: "confirmaremailsucesso-en.html",
+        smsconfirmacao: "Vital confirmation code: "
     },
     "pt-br": {
         emailconfirmacaoassunto: "Finalizar cadastro no vital",
         emailconfirmacaohtml: "confirmaremail.html",
         emailconfirmacaoerro: "Ocorreu um erro ao tentar confirmar seu registro. " + 
             "Por favor verifique se a confirmação não foi confirmada ou expirou.",
-        emailconfirmacaosucessohtml: "confirmaremailsucesso.html" 
+        emailconfirmacaosucessohtml: "confirmaremailsucesso.html",
+        smsconfirmacao: "Código de confirmação do Vital: "
     }
 };
 
 /* Retorna o texto da língua */
 module.exports = function(lingua, variavel) {
+    //Muda tudo para minúsculo
+    lingua = lingua.toLowerCase();
     //Se não reconhecer a língua escolhe o português
     if (linguas[lingua] == undefined) 
         lingua = "pt-br";
