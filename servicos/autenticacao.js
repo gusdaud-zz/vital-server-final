@@ -261,7 +261,7 @@ function confirmarEmail(req, res) {
     var lingua = req.body.lingua;
     var online = req.body.online;
     //Procura para verificar se existe
-    db.query("UPDATE Usuario SET PendenteConfirmar=NULL WHERE PendenteConfirmar=?", [codigo], 
+    db.query("UPDATE Usuario SET ConfirmarEmail=NULL WHERE ConfirmarEmail=?", [codigo], 
         function(err, result) {
             if (online == true) {  //Confirmação pelo sistema
                 if (err)
@@ -330,7 +330,7 @@ function loginTelefone(req, res) {
     }
     
     //Executa a query
-    db.query('SELECT Id, Senha from Usuario WHERE Telefone=? AND PendenteConfirmar IS NULL', [Telefone], 
+    db.query('SELECT Id, Senha from Usuario WHERE Telefone=? AND ConfirmarTelefone IS NULL', [Telefone], 
         function(err, rows, fields) {
         if (!err) {
             //Senha ou usuário estão incorretos
@@ -369,7 +369,7 @@ function loginEmail(req, res) {
     var Email = usuario.name;
     var Senha = usuario.pass;
     //Executa a query
-    db.query('SELECT Id from Usuario WHERE Email=? AND Senha=? AND PendenteConfirmar IS NULL', [Email, Senha], 
+    db.query('SELECT Id from Usuario WHERE Email=? AND Senha=? AND ConfirmarTelefone IS NULL', [Email, Senha], 
         function(err, rows, fields) {
         if (!err) {
             //Senha ou usuário estão incorretos
