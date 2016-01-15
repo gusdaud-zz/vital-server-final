@@ -21,7 +21,12 @@ exports.enviarEmail = function(destinatario, assunto, corpo, callback) {
         to: destinatario,
         subject: assunto,
         html: corpo
-    }, callback);
+    }, function(err, response) { 
+        if (err)
+            callback({erro: "erroenviarmail" })
+        else
+            callback({ok: true})
+    });
 }
 
 /* Substitui todas as ocorrências */
