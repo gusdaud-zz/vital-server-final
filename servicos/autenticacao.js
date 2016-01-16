@@ -18,10 +18,11 @@ exports.iniciar = function(app, _db, express) {
     db = _db;
     //Registra os serviços
     app.post('/servicos/autenticacao/telefone', loginTelefone);
-    app.post('/servicos/autenticacao/email', loginEmail);
-    app.post('/servicos/autenticacao/facebook', loginFacebook);
+    //app.post('/servicos/autenticacao/email', loginEmail);
+    //app.post('/servicos/autenticacao/facebook', loginFacebook);
     app.post('/servicos/autenticacao/criarusuario', criarNovoUsuario);
     app.post('/servicos/autenticacao/confirmaremail', confirmarEmail);
+    app.post('/servicos/autenticacao/confirmartelefone', confirmarTelefone);
     //Pedidos que requerem o token
     app.use(requerToken);
     app.get('/servicos/autenticacao/logout', logout);
@@ -249,6 +250,21 @@ function enviarConfirmacao(Nome, Telefone, Email, confirmarTelefone, confirmarEm
     
 }
 
+/* Confirmar telefone */
+function confirmarTelefone(req, res) {
+    var codigo = req.body.codigo;
+    //Procura para verificar se existe
+    db.query("UPDATE Usuario SET ConfirmarTelefone=NULL WHERE ConfirmarTelefone=?", [codigo], 
+        function(err, result) {
+            if (err)
+                res.json({erro: "erroconfirmar" })
+            else if (result.affectedRows == 0) 
+                res.json({erro: "codigoinvalido" })
+            else 
+                res.json({ok: true })
+        })
+}
+
 /* Confirmar email */
 function confirmarEmail(req, res) {
     var codigo = req.body.codigo;
@@ -330,7 +346,7 @@ function loginTelefone(req, res) {
             //Senha ou usuário estão incorretos
             if (rows.length == 0) 
                 res.json({erro: "usuarionaoencontrado" })
-            //Encontrou o usuário, cria o token
+            //Encontrou o usuário, cria o token se a senha estiver correta
             else 
             {
                 //Valida se a a senha está correta
