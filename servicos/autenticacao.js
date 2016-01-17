@@ -252,10 +252,12 @@ function enviarConfirmacao(Nome, Telefone, Email, confirmarTelefone, confirmarEm
 
 /* Confirmar telefone */
 function confirmarTelefone(req, res) {
+    console.log("confirmar telefone ")
     var codigo = req.body.codigo;
+    var telefone = req.body.telefone;
     //Procura para verificar se existe
-    db.query("UPDATE Usuario SET ConfirmarTelefone=NULL WHERE ConfirmarTelefone=?", [codigo], 
-        function(err, result) {
+    db.query("UPDATE Usuario SET ConfirmarTelefone=NULL WHERE ConfirmarTelefone=? AND Telefone=?", 
+        [codigo, telefone], function(err, result) {
             if (err)
                 res.json({erro: "erroconfirmar" })
             else if (result.affectedRows == 0) 
