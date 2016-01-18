@@ -164,7 +164,7 @@ function criarNovoUsuario(req, res) {
                 //Não existe, podemos criar
                 var confirmarTelefone = gerarSenha(6, true);
                 var confirmarEmail = usaEmail ? gerarSenha(4, false) : null;
-                criarUsuario(Telefone, Email, Nome, Sobrenome, Senha, null, 
+                criarUsuario(Telefone, Email, Nome, Sobrenome, Senha, 
                     confirmarTelefone, confirmarEmail, function(err, result) {
                     //Ocorreu um erro ao tentar criar
                     if (err)
@@ -209,7 +209,6 @@ function enviarConfirmacao(Nome, Telefone, Email, confirmarTelefone, confirmarEm
 
 /* Confirmar telefone */
 function confirmarTelefone(req, res) {
-    console.log("confirmar telefone ")
     var codigo = req.body.codigo;
     var telefone = req.body.telefone;
     //Procura para verificar se existe
@@ -252,7 +251,7 @@ function confirmarEmail(req, res) {
 }
 
 /* Cria um usuário */
-function criarUsuario(telefone, email, nome, sobrenome, senha, facebook_id, confirmarTelefone, confirmarEmail, callback) {
+function criarUsuario(telefone, email, nome, sobrenome, senha, confirmarTelefone, confirmarEmail, callback) {
     var item = {
         Telefone: telefone,
         Email: email,
@@ -260,8 +259,7 @@ function criarUsuario(telefone, email, nome, sobrenome, senha, facebook_id, conf
         Sobrenome: sobrenome,
         Senha: senha,
         ConfirmarTelefone: confirmarTelefone, 
-        ConfirmarEmail: confirmarEmail, 
-        Facebook_Id: facebook_id
+        ConfirmarEmail: confirmarEmail
     };
     db.query("INSERT INTO Usuario SET ?", item, callback);
 }
