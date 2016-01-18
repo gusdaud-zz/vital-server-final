@@ -41,10 +41,9 @@ function uploadFoto(req, res) {
     if (req.file) {
         //Upload para o banco de dados
         var foto = fs.readFileSync(req.file.path);
-        db.query("UPDATE Usuarios SET Foto=? WHERE Id=?", [foto, req.usuario], function(err, result) {
+        db.query("UPDATE Usuario SET Foto=? WHERE Id=?", [foto, req.usuario], function(err, result) {
             //Apaga o arquivo
             fs.unlink(req.file.path);       
-            console.log(err);     
             //Verifica o retorno
             if (err) 
                 res.json({erro: "erronoupload"})
