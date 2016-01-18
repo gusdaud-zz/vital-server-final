@@ -18,7 +18,7 @@ exports.iniciar = function(app, _db, express) {
     //Registra os serviços
     app.post('/servicos/autenticacao/telefone', loginTelefone);
     app.post('/servicos/autenticacao/criarusuario', criarNovoUsuario);
-    app.post('/servicos/autenticacao/confirmaremail', confirmarEmail);
+    app.get('/servicos/autenticacao/confirmaremail', confirmarEmail);
     app.post('/servicos/autenticacao/confirmartelefone', confirmarTelefone);
     //Pedidos que requerem o token
     app.use(requerToken);
