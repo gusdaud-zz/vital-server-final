@@ -67,7 +67,7 @@ function retornarFoto(req, res) {
         else {
             //Se hover foto armazenada no perfil
             if (rows[0].Foto != null) {
-                res.setHeader('content-type', 'image/jpg');
+                res.setHeader('content-type', 'image/jpeg');
                 res.write(rows[0].Foto);
                 res.end();
             }
