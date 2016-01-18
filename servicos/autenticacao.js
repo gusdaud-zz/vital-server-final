@@ -3,6 +3,7 @@
 /* Variáveis compartilhadas */
 var db;
 /* Módulos usados */
+var path = require('path');
 var basicAuth = require('basic-auth');
 var crypto = require('crypto');
 var request = require('request');
@@ -241,7 +242,8 @@ function confirmarEmail(req, res) {
             else if (result.affectedRows == 0) 
                 res.send(traducao(lingua,"emailconfirmacaoerro"))
             else 
-                res.sendFile(__dirname + "/templates/" + traducao(lingua, "emailconfirmacaosucessohtml"))
+                res.sendFile(path.join(__dirname, "../templates/") + 
+                    traducao(lingua, "emailconfirmacaosucessohtml"))
         })
 }
 
