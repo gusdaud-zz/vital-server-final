@@ -6,6 +6,7 @@ var config = require("../configuracoes");
 var traducao = require("../traducao");
 var request = require('request');
 var multer  = require('multer')
+var fs  = require('fs')
 var upload = multer({ dest: 'uploads/' })
 
 /* Inicia os serviços de autenticação */
@@ -37,9 +38,20 @@ function dadosUsuario(req, res) {
 
 /* Upload da foto do usuário */
 function uploadFoto(req, res) {
-    console.log("Upload foto")
-    console.log(req.file)
-    console.log(req.files)
+    if (req.file) {
+        //Upload para o banco de dados
+        var foto = fs.readFileSync(req.file.path);
+        db.query("UPDATE Usuarios SET Foto=? WHERE Id=?", [foto, req.usuario], function(err, result) {
+            //Apaga o arquivo
+            fs.unlink(req.file.path);            
+            //Verifica o retorno
+            if (err) 
+                res.json({erro: "erronoupload"})
+            else
+                res.json({ok: true});
+        })
+        
+    }
 }
 
 /* Retorna a foto do usuário */
