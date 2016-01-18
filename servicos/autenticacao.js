@@ -67,6 +67,7 @@ exports.validarToken = function(token, callback) {
 
 /* Valida se requer o token */
 function requerToken(req, res, next) {
+    console.log(req)
     //Procura pelo token
 	var token = req.body.token || req.query.token || req.headers['x-access-token'];
     //Decodifica o token
