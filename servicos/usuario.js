@@ -66,8 +66,10 @@ function retornarFoto(req, res) {
             res.json({erro: "erro"})
         else {
             //Se hover foto armazenada no perfil
-            if (rows[0].Foto != null)
-                res.write(rows[0].Foto)
+            if (rows[0].Foto != null) {
+                res.write(rows[0].Foto);
+                res.end();
+            }
             else
                 res.end();            
         }
