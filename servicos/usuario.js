@@ -37,7 +37,9 @@ function dadosUsuario(req, res) {
 
 /* Upload da foto do usuário */
 function uploadFoto(req, res) {
-    console.log("Upload foto - " + req.file.path)
+    console.log("Upload foto")
+    console.log(req.file)
+    console.log(req.files)
 }
 
 /* Retorna a foto do usuário */
