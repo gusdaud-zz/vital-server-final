@@ -241,7 +241,7 @@ function confirmarEmail(req, res) {
             else if (result.affectedRows == 0) 
                 res.send(traducao(lingua,"emailconfirmacaoerro"))
             else 
-                res.sendFile("./templates/" + traducao(lingua, "emailconfirmacaosucessohtml"))
+                res.sendFile("/templates/" + traducao(lingua, "emailconfirmacaosucessohtml"))
         })
 }
 
