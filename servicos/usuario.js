@@ -5,6 +5,8 @@ var email = require('./email');
 var config = require("../configuracoes");
 var traducao = require("../traducao");
 var request = require('request');
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
 
 /* Inicia os serviços de autenticação */
 exports.iniciar = function(app, _db, express) {
@@ -13,7 +15,7 @@ exports.iniciar = function(app, _db, express) {
     //Registra os serviços
     app.post('/servicos/usuario/dados', dadosUsuario);
     app.get('/servicos/usuario/retornarfoto', retornarFoto);
-    app.post('/servicos/usuario/uploadfoto', uploadFoto);
+    app.post('/servicos/usuario/uploadfoto', upload.single('avatar'), uploadFoto);
 }
 
 /* Retorna os dados do usuário */
@@ -35,7 +37,7 @@ function dadosUsuario(req, res) {
 
 /* Upload da foto do usuário */
 function uploadFoto(req, res) {
-    console.log("Upload foto")
+    console.log("Upload foto - " + req.file.path)
 }
 
 /* Retorna a foto do usuário */
