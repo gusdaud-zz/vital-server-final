@@ -44,7 +44,7 @@ function uploadFoto(req, res) {
         db.query("UPDATE Usuario SET Foto=? WHERE Id=?", [foto, req.usuario], function(err, result) {
             //Apaga o arquivo
             fs.unlink(req.file.path);       
-            //Verifica o retorno
+            //Verifica o retorno da tentativa
             if (err) 
                 res.json({erro: "erronoupload", detalhes: err})
             else
