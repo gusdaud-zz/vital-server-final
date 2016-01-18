@@ -6,7 +6,6 @@ var db;
 var basicAuth = require('basic-auth');
 var crypto = require('crypto');
 var request = require('request');
-var fb = require('fb');
 var email = require('./email');
 var config = require("../configuracoes");
 var traducao = require("../traducao");
@@ -18,8 +17,6 @@ exports.iniciar = function(app, _db, express) {
     db = _db;
     //Registra os serviços
     app.post('/servicos/autenticacao/telefone', loginTelefone);
-    //app.post('/servicos/autenticacao/email', loginEmail);
-    //app.post('/servicos/autenticacao/facebook', loginFacebook);
     app.post('/servicos/autenticacao/criarusuario', criarNovoUsuario);
     app.post('/servicos/autenticacao/confirmaremail', confirmarEmail);
     app.post('/servicos/autenticacao/confirmartelefone', confirmarTelefone);
@@ -97,59 +94,19 @@ function limparRegistrosSemConfirmacao() {
 
 /* Retorna os dados do usuário */
 function retornarUsuario(token, req, res) {
-    db.query('SELECT Nome, Sobrenome, Email, Facebook_Id, Publico FROM Sessao LEFT JOIN Usuario' +
+    db.query('SELECT Nome, Sobrenome, Email, Publico FROM Sessao LEFT JOIN Usuario' +
         ' ON Sessao.Usuario = Usuario.Id  WHERE Sessao.Id=?', [token], 
         function(err, rows, fields) {
             if (!err) { 
                 if (rows.length > 0)
                     res.json({ok: true, token: token, 
-                        usuario: {Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, Email: rows[0].Email, Facebook_Id: rows[0].Facebook_Id},
+                        usuario: {Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, Email: rows[0].Email},
                         publico: JSON.parse(rows[0].Publico)})
                 else
                     res.json({ erro: "errodb" })
             } else 
                 res.json({ erro: "errodb" })
         } );
-}
-
-/* Serviço para login com facebook, retorna token */
-function loginFacebook(req, res) {
-
-    //Conecta-se com o facebook
-    fb.api('me', { fields: ['id', 'name', 'email'], access_token: req.body.facebooktoken }, function (fres) {
-        if (fres.error)
-            res.json({erro: "errofacebook", detalhes: fres.error})
-        else { 
-            //Executa a query
-            var Email = fres.email;
-            var FID = fres.id;
-            db.query('SELECT Id, Facebook_Id from Usuario WHERE Email=? AND ConfirmarTelefone IS NULL', 
-                [Email], function(err, rows, fields) {
-                if (!err) {
-                    if (rows.length > 0) //Se já existir a entrada
-                    {
-                        //Cria o token e retorna
-                        gerarToken(rows[0].Id, function(err, token) {
-                            retornarUsuario(token, req, res)
-                        });
-                        //Associa se não exister ao facebook
-                        if (rows[0].Facebook_Id != FID)
-                            db.query("UPDATE Usuario SET Facebook_Id=? WHERE Id=?", [FID, rows[0].Id]);
-                    }
-                    else  //Se não existir, cria o usuário
-                        criarUsuario(fres.email, fres.name, gerarSenha(8), fres.id, null, function(err, result) {
-                            if (err)
-                                res.json({erro: "errocriarusuario" })
-                            else
-                                gerarToken(result.insertId, function(err, token) {
-                                    retornarUsuario(token, req, res);
-                                })
-                        })
-                } else
-                    res.json({ erro: "errodb" });
-            });
-        }
-    });
 }
 
 /* Valida o email */
@@ -367,38 +324,5 @@ function loginTelefone(req, res) {
         }
         else 
             res.json({erro: "errodb", detalhes: err });
-    });
-}
-
-/* Serviço para login com e-mail, retorna token */
-function loginEmail(req, res) {
-    //Obtém o usuário
-    var usuario = basicAuth(req);
-    if (!usuario) {
-        res.json({erro: "semusuario" });
-        return;
-    }
-    var Email = usuario.name;
-    var Senha = usuario.pass;
-    //Executa a query
-    db.query('SELECT Id from Usuario WHERE Email=? AND Senha=? AND ConfirmarTelefone IS NULL', [Email, Senha], 
-        function(err, rows, fields) {
-        if (!err) {
-            //Senha ou usuário estão incorretos
-            if (rows.length == 0) 
-                res.json({erro: "usuarionaoencontrado" })
-            //Encontrou o usuário, cria o token
-            else 
-            {
-                gerarToken(rows[0].Id, function(err, token) {
-                    if (err) 
-                        res.json({ erro: "erroaogerartoken" } )
-                    else
-                        retornarUsuario(token, req, res)
-                });
-            }
-        }
-        else 
-            res.json({erro: "errodb" });
     });
 }

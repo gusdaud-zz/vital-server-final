@@ -18,7 +18,7 @@ exports.iniciar = function(app, _db, express) {
 /* Retorna os dados do usuário */
 function dadosUsuario(req, res) {
     //Obtém os dados do usuário
-    db.query('SELECT Nome, Email, Facebook_Id, Publico FROM Sessao LEFT JOIN Usuario' +
+    db.query('SELECT Nome, Email, Publico FROM Sessao LEFT JOIN Usuario' +
         ' ON Sessao.Usuario = Usuario.Id  WHERE Sessao.Token=?', [req.token], 
         function(err, rows, fields) {
         if (err) 
@@ -27,7 +27,7 @@ function dadosUsuario(req, res) {
             res.json({erro: "erronologin"})
         else
             res.json({ok: true, 
-                usuario: {Nome: rows[0].Nome, Email: rows[0].Email, Facebook_Id: rows[0].Facebook_Id},
+                usuario: {Nome: rows[0].Nome, Email: rows[0].Email},
                 publico: JSON.parse(rows[0].Publico)});
     });
 }
@@ -36,7 +36,7 @@ function dadosUsuario(req, res) {
 function fotoUsuario(req, res) {
     //Obtém os dados do usuário
     var usuario = req.usuario || req.query.usuario;
-    db.query('SELECT Nome, Facebook_Id, Foto FROM Usuario WHERE Id=?', [usuario], 
+    db.query('SELECT Nome, Foto FROM Usuario WHERE Id=?', [usuario], 
         function(err, rows, fields) {
         if (err) 
             res.json({erro: "erro", detalhes: err})
@@ -46,10 +46,6 @@ function fotoUsuario(req, res) {
             //Se hover foto armazenada no perfil
             if (rows[0].Foto != null)
                 res.write(rows[0].Foto)
-            //Se houver foto no facebook
-            else if (rows[0].Facebook_Id != null)
-                request("http://graph.facebook.com/" + rows[0].Facebook_Id + 
-                    "/picture?width=100&height=100").pipe(res)
             else
                 res.end();            
         }
