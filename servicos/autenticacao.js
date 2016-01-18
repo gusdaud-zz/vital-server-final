@@ -197,7 +197,7 @@ function enviarConfirmacao(Nome, Telefone, Email, confirmarTelefone, confirmarEm
             //Caso o usuário tenha colocado um email
             if (Email)
                 email.enviarEmailTemplate(Email, traducao(Lingua, "emailconfirmacaoassunto"), traducao(Lingua, "emailconfirmacaohtml"), {Nome: Nome,
-                    Link: config.vital.base + "servicos/confirmaremail?codigo=" + confirmarEmail + 
+                    Link: config.vital.base + "servicos/autenticacao/confirmaremail?codigo=" + confirmarEmail + 
                     "&lingua=" + Lingua , Codigo: confirmarEmail, Url: config.vital.base }, callback)
             else
                 //Caso contrário retorna que tudo ocorreu bem
@@ -225,9 +225,9 @@ function confirmarTelefone(req, res) {
 
 /* Confirmar email */
 function confirmarEmail(req, res) {
-    var codigo = req.body.codigo;
-    var lingua = req.body.lingua;
-    var online = req.body.online;
+    var codigo = req.query.codigo;
+    var lingua = req.query.lingua;
+    var online = req.query.online;
     //Procura para verificar se existe
     db.query("UPDATE Usuario SET ConfirmarEmail=NULL WHERE ConfirmarEmail=?", [codigo], 
         function(err, result) {
