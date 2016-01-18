@@ -46,7 +46,7 @@ function uploadFoto(req, res) {
             fs.unlink(req.file.path);       
             //Verifica o retorno
             if (err) 
-                res.json({erro: "erronoupload"})
+                res.json({erro: "erronoupload", detalhes: err})
             else
                 res.json({ok: true});
         })
