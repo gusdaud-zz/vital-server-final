@@ -17,6 +17,7 @@ exports.iniciar = function(app, _db, express) {
     app.post('/servicos/usuario/dados', dadosUsuario);
     app.get('/servicos/usuario/retornarfoto', retornarFoto);
     app.post('/servicos/usuario/uploadfoto', upload.single('conteudo'), uploadFoto);
+    app.post('/servicos/usuario/limparfoto', limparFoto);
 }
 
 /* Retorna os dados do usuário */
@@ -34,6 +35,17 @@ function dadosUsuario(req, res) {
                 usuario: {Nome: rows[0].Nome, Email: rows[0].Email},
                 publico: JSON.parse(rows[0].Publico)});
     });
+}
+
+/* Limpa a foto do usuário */
+function limparFoto(req, res) {
+    db.query("UPDATE Usuario SET Foto=NULL WHERE Id=?", [req.usuario], function(err, result) {
+        //Verifica o retorno da tentativa
+        if (err) 
+            res.json({erro: "erroaolimparfoto", detalhes: err})
+        else
+            res.json({ok: true});
+    })
 }
 
 /* Upload da foto do usuário */
