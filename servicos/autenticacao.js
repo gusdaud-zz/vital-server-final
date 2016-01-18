@@ -227,26 +227,15 @@ function confirmarTelefone(req, res) {
 function confirmarEmail(req, res) {
     var codigo = req.query.codigo;
     var lingua = req.query.lingua;
-    var online = req.query.online;
     //Procura para verificar se existe
     db.query("UPDATE Usuario SET ConfirmarEmail=NULL WHERE ConfirmarEmail=?", [codigo], 
         function(err, result) {
-            if (online == true) {  //Confirmação pelo sistema
-                if (err)
-                    res.json({erro: "erroconfirmar" })
-                else if (result.affectedRows == 0) 
-                    res.json({erro: "codigoinvalido" })
-                else 
-                    res.json({ok: true })
-            } else {  //Usuário clicou diretamente no link
-            //
-                if (err)
-                    res.send(traducao(lingua,"emailconfirmacaoerro"))
-                else if (result.affectedRows == 0) 
-                    res.send(traducao(lingua,"emailconfirmacaoerro"))
-                else 
-                    res.sendFile("./templates/" + traducao(lingua, "emailconfirmacaosucessohtml"))
-                }
+            if (err)
+                res.send(traducao(lingua,"emailconfirmacaoerro"))
+            else if (result.affectedRows == 0) 
+                res.send(traducao(lingua,"emailconfirmacaoerro"))
+            else 
+                res.sendFile("./templates/" + traducao(lingua, "emailconfirmacaosucessohtml"))
         })
 }
 
