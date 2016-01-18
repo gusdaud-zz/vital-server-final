@@ -1,6 +1,6 @@
 module.exports = {
     vital: {
-        base:"https://gusdaud.dlinkddns.com/" 
+        base:"http://gusdaud.dlinkddns.com/" 
     },
     mysql: {
         servidor: "gusdaud.dlinkddns.com",
