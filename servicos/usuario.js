@@ -15,7 +15,7 @@ exports.iniciar = function(app, _db, express) {
     //Registra os serviços
     app.post('/servicos/usuario/dados', dadosUsuario);
     app.get('/servicos/usuario/retornarfoto', retornarFoto);
-    app.post('/servicos/usuario/uploadfoto', upload.single('avatar'), uploadFoto);
+    app.post('/servicos/usuario/uploadfoto', upload.single('conteudo'), uploadFoto);
 }
 
 /* Retorna os dados do usuário */
