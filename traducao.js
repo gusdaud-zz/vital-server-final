@@ -21,7 +21,7 @@ var linguas = {
 /* Retorna o texto da língua */
 module.exports = function(lingua, variavel) {
     //Muda tudo para minúsculo
-    if (ligua) lingua = lingua.toLowerCase();
+    if (lingua) lingua = lingua.toLowerCase();
     //Se não reconhecer a língua escolhe o português
     if (linguas[lingua] == undefined) 
         lingua = "pt-br";
