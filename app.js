@@ -29,10 +29,9 @@ function iniciarServidor(local) {
         https.createServer(ssl, app).listen(porta);
     console.log("Servidor iniciado na porta " + porta);
     //Inicia os middlewares do express
-    app.use(bodyParser()); 
+    app.use(express.static('public'));
     app.use(bodyParser.json()); 
     app.use(bodyParser.urlencoded({ extended: true })); 
-    app.use(express.static('public'));
 }
 
 /* Para substituir todas as ocorrências de um caractere em um string */
