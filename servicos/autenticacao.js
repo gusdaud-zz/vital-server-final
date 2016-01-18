@@ -198,7 +198,7 @@ function enviarConfirmacao(Nome, Telefone, Email, confirmarTelefone, confirmarEm
             if (Email)
                 email.enviarEmailTemplate(Email, traducao(Lingua, "emailconfirmacaoassunto"), traducao(Lingua, "emailconfirmacaohtml"), {Nome: Nome,
                     Link: config.vital.base + "servicos/confirmaremail?codigo=" + confirmarEmail + 
-                    "&lingua=" + Lingua , Codigo: confirmarEmail }, callback)
+                    "&lingua=" + Lingua , Codigo: confirmarEmail, Url: config.vital.base }, callback)
             else
                 //Caso contrário retorna que tudo ocorreu bem
                 callback({ok: true })
