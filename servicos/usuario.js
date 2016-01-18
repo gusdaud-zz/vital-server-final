@@ -13,7 +13,7 @@ exports.iniciar = function(app, _db, express) {
     //Registra os serviços
     app.post('/servicos/usuario/dados', dadosUsuario);
     app.get('/servicos/usuario/retornarfoto', retornarFoto);
-    app.get('/servicos/usuario/uploadfoto', uploadFoto);
+    app.post('/servicos/usuario/uploadfoto', uploadFoto);
 }
 
 /* Retorna os dados do usuário */
