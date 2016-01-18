@@ -12,7 +12,8 @@ exports.iniciar = function(app, _db, express) {
     db = _db;
     //Registra os serviços
     app.post('/servicos/usuario/dados', dadosUsuario);
-    app.get('/servicos/usuario/foto', fotoUsuario);
+    app.get('/servicos/usuario/retornarfoto', retornarFoto);
+    app.get('/servicos/usuario/uploadfoto', uploadFoto);
 }
 
 /* Retorna os dados do usuário */
@@ -32,8 +33,13 @@ function dadosUsuario(req, res) {
     });
 }
 
+/* Upload da foto do usuário */
+function uploadFoto(req, res) {
+    console.log("Upload foto")
+}
+
 /* Retorna a foto do usuário */
-function fotoUsuario(req, res) {
+function retornarFoto(req, res) {
     //Obtém os dados do usuário
     var usuario = req.usuario || req.query.usuario;
     db.query('SELECT Nome, Foto FROM Usuario WHERE Id=?', [usuario], 
