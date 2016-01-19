@@ -270,7 +270,7 @@ function gerarSenha(caracteres, digitos) {
 }
 
 /* Gera um novo token */
-function gerarToken(usuario, callback) {
+function gerarToken(usuario, dispositivo, callback) {
     var expira = new Date();
     expira.setHours(expira.getHours() + 1);
     var token = {Id: gerarSenha(28), 
@@ -279,7 +279,7 @@ function gerarToken(usuario, callback) {
         callback(err, token.Id);
     });
     //Atualiza com a data e horário do último acesso
-    db.query("UPDATE Usuario SET Acesso=NOW() WHERE Id=?", [usuario]);
+    db.query("UPDATE Usuario SET Acesso=NOW(), Dispositivo=? WHERE Id=?", [dispositivo, usuario]);
 
 }
 
@@ -288,6 +288,7 @@ function loginTelefone(req, res) {
     //Salva telefone e senha
     var Telefone = req.body.telefone;
     var Senha = req.body.senha;
+    var Dispositivo = req.body.dispositivo;
     if (Telefone == "") {
         res.json({ erro: "semtelefone" });
         return;
@@ -309,7 +310,7 @@ function loginTelefone(req, res) {
                    return;
                 } 
                 //Gera o token
-                gerarToken(rows[0].Id, function(err, token) {
+                gerarToken(rows[0].Id, Dispositivo, function(err, token) {
                     if (err) 
                         res.json({ erro: "erroaogerartoken" } )
                     else
