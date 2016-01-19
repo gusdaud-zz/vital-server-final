@@ -84,7 +84,7 @@ function retornarFoto(req, res) {
                 res.end();
             }
             else
-                res.end();            
+                res.json({ok: true, nome: rows[0].Nome});
         }
     });    
 }
