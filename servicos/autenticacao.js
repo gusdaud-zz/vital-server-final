@@ -127,7 +127,7 @@ function criarNovoUsuario(req, res) {
     //Salva as variáveis
     var Telefone = req.body.telefone;
     var Nome = req.body.nome;
-    var Sobrenome = req.body.nome;
+    var Sobrenome = req.body.sobrenome;
     var Email = req.body.email;
     var Senha = req.body.senha;
     var Lingua = req.body.lingua;
