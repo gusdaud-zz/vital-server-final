@@ -58,7 +58,7 @@ function sincronizarAgenda(req, res) {
         " OR tmp.telefone = usuario.Telefone; DROP TABLE tmp;";
 
     //Executa a query
-    db.query(query, function(err, rows, fields) {
+    db.query(query, [], function(err, rows, fields) {
         console.log(err);
         if (err) 
             res.json({erro: "erroaosincronizar", detalhes: err})
