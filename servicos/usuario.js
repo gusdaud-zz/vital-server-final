@@ -45,7 +45,7 @@ function sincronizarAgenda(req, res) {
     var telefones = req.body.telefones
     //Prepara a query
     //Cria a tabela temporária
-    var query = "CREATE TEMPORARY TABLE tmp (email VARCHAR(100), telefone VARCHAR(100));\n"
+    var query = "CREATE TEMPORARY TABLE IF NOT EXISTS tmp (email VARCHAR(100), telefone VARCHAR(100));\n"
     //Adiciona as entradas
     query += "INSERT INTO tmp VALUES "  
     for (var i = 0; i < emails.length; i++) {
