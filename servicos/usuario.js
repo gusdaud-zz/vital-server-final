@@ -54,17 +54,20 @@ function sincronizarAgenda(req, res) {
     }
     query += ";\n "; 
     //Define a query de procura e por fim apaga a tabela temporária
-    query += "SELECT IF(usuario.Id IS NULL, 0, 1) FROM tmp LEFT JOIN usuario ON tmp.email = usuario.Email " +
+    query += "SELECT IF(usuario.Id IS NULL, 0, 1) AS res FROM tmp LEFT JOIN usuario ON tmp.email = usuario.Email " +
         " OR tmp.telefone = usuario.Telefone; DROP TABLE tmp;";
 
     //Executa a query
-    db.query(query, [], function(err, rows, fields) {
+    db.query(query, function(err, rows, fields) {
         console.log(err);
         if (err) 
             res.json({erro: "erroaosincronizar", detalhes: err})
-        else
-            res.json({ok: true, 
-                entradas: rows });
+        else {
+            //Funcionou, monta e retorna a matriz
+            var linhas = [];
+            for (var i in rows) { linhas.push(rows[i].res); }
+            res.json({ok: true, entradas: linhas });
+        }
     });
     
 }
