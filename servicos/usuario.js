@@ -59,14 +59,13 @@ function sincronizarAgenda(req, res) {
 
     //Executa a query
     db.query(query, function(err, rows, fields) {
-        console.log(err);
         if (err) 
             res.json({erro: "erroaosincronizar", detalhes: err})
         else {
             //Funcionou, monta e retorna a matriz
             var linhas = [];
             for (var i in rows) { linhas.push(rows[i].res); }
-            console.log(linhas);
+            console.log(rows);
             res.json({ok: true, entradas: linhas });
         }
     });
