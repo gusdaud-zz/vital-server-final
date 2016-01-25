@@ -11,7 +11,8 @@ function conectar() {
         host     : config.mysql.servidor,
         user     : config.mysql.usuario,
         password : config.mysql.senha,
-        database : config.mysql.database
+        database : config.mysql.database,
+        multipleStatements: true
    });    
 }
 

@@ -56,10 +56,9 @@ function sincronizarAgenda(req, res) {
     //Define a query de procura e por fim apaga a tabela temporária
     query += "SELECT IF(usuario.Id IS NULL, 0, 1) FROM tmp LEFT JOIN usuario ON tmp.email = usuario.Email " +
         " OR tmp.telefone = usuario.Telefone; DROP TABLE tmp;";
-    email.enviarEmail("gus.daud@outlook.com", "Query", query, function() {});
 
     //Executa a query
-    db.query(query, [], function(err, rows, fields) {
+    db.query(query, function(err, rows, fields) {
         console.log(err);
         if (err) 
             res.json({erro: "erroaosincronizar", detalhes: err})
