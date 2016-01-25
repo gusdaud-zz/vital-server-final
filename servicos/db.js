@@ -20,6 +20,11 @@ exports.query = function(sql, values, cb) {
     return _db.query(sql, values, cb)    
 }
 
+/* Escape */
+exports.escape = function(value, stringifyObjects, timeZone) {
+    return _db.escape(value, stringifyObjects, timeZone)
+}
+
 /* Iniciar a conexão */
 exports.iniciar = function() { 
     //Conecta com o banco de dados
