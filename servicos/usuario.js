@@ -18,6 +18,7 @@ exports.iniciar = function(app, _db, express) {
     app.get('/servicos/usuario/retornarfoto', retornarFoto);
     app.post('/servicos/usuario/uploadfoto', upload.single('conteudo'), uploadFoto);
     app.post('/servicos/usuario/limparfoto', limparFoto);
+    app.post('/servicos/usuario/sincronizaragenda', sincronizarAgenda);
 }
 
 /* Retorna os dados do usuário */
@@ -35,6 +36,35 @@ function dadosUsuario(req, res) {
                 usuario: {Nome: rows[0].Nome, Email: rows[0].Email},
                 publico: JSON.parse(rows[0].Publico)});
     });
+}
+
+/* Para sincronizar a agenda */
+function sincronizarAgenda(req, res) {
+    //Carrega as variáveis
+    var emails = req.body.emails
+    var telefones = req.body.telefones
+    //Prepara a query
+    //Cria a tabela temporária
+    var query = "CREATE TEMPORARY TABLE tmp (email VARCHAR(100), telefone VARCHAR(100));"
+    //Adiciona as entradas
+    query += "INSERT INTO tmp VALUES "  
+    for (var i = 0; i < emails.length; i++) {
+        query += "(" + db.escape(emails[i]) + ", " + db.escape(telefones[i]) +  ")" + 
+            (i < emails.length - 1) ? "," : ""   
+    }
+    query += ";"; 
+    //Define a query de procura e por fim apaga a tabela temporária
+    query += "SELECT IF(usuario.Id IS NULL, 0, 1) FROM tmp LEFT JOIN usuario ON tmp.email = usuario.Email " +
+        " OR tmp.telefone = usuario.Telefone; DROP TABLE tmp; " 
+    //Executa a query
+    db.query(query, [], function(err, rows, fields) {
+        if (err) 
+            res.json({erro: "erroaosincronizar"})
+        else
+            res.json({ok: true, 
+                entradas: rows });
+    });
+    
 }
 
 /* Limpa a foto do usuário */
