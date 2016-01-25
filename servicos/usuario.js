@@ -57,7 +57,6 @@ function sincronizarAgenda(req, res) {
     query += "SELECT IF(usuario.Id IS NULL, 0, 1) FROM tmp LEFT JOIN usuario ON tmp.email = usuario.Email " +
         " OR tmp.telefone = usuario.Telefone; DROP TABLE tmp; " 
     console.log(query);
-    console.log(emails);
     //Executa a query
     db.query(query, [], function(err, rows, fields) {
         if (err) 
