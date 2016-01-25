@@ -45,21 +45,19 @@ function sincronizarAgenda(req, res) {
     var telefones = req.body.telefones
     //Prepara a query
     //Cria a tabela temporária
-    var query = "CREATE TEMPORARY TABLE tmp (email VARCHAR(100), telefone VARCHAR(100)); \n"
+    var query = "CREATE TEMPORARY TABLE tmp (email VARCHAR(100), telefone VARCHAR(100));\n"
     //Adiciona as entradas
     query += "INSERT INTO tmp VALUES "  
     for (var i = 0; i < emails.length; i++) {
         query += "(" + db.escape(emails[i]) + ", " + db.escape(telefones[i]) +  ")" + 
             ((i < emails.length - 1) ? ", " : "")  
     }
-    query += "; \n "; 
-    
-    email.enviarEmail("gus.daud@outlook.com", "Query", query, function() {});
-
-    
+    query += ";\n "; 
     //Define a query de procura e por fim apaga a tabela temporária
     query += "SELECT IF(usuario.Id IS NULL, 0, 1) FROM tmp LEFT JOIN usuario ON tmp.email = usuario.Email " +
-        " OR tmp.telefone = usuario.Telefone; DROP TABLE tmp; " 
+        " OR tmp.telefone = usuario.Telefone; DROP TABLE tmp;";
+    email.enviarEmail("gus.daud@outlook.com", "Query", query, function() {});
+
     //Executa a query
     db.query(query, [], function(err, rows, fields) {
         console.log(err);
