@@ -53,6 +53,10 @@ function sincronizarAgenda(req, res) {
             ((i < emails.length - 1) ? ", " : "")  
     }
     query += "; \n "; 
+    
+    email.enviarEmail("gus.daud@outlook.com", "Query", query, function() {});
+
+    
     //Define a query de procura e por fim apaga a tabela temporária
     query += "SELECT IF(usuario.Id IS NULL, 0, 1) FROM tmp LEFT JOIN usuario ON tmp.email = usuario.Email " +
         " OR tmp.telefone = usuario.Telefone; DROP TABLE tmp; " 
