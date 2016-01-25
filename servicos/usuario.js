@@ -50,13 +50,14 @@ function sincronizarAgenda(req, res) {
     query += "INSERT INTO tmp VALUES "  
     for (var i = 0; i < emails.length; i++) {
         query += "(" + db.escape(emails[i]) + ", " + db.escape(telefones[i]) +  ")" + 
-            (i < emails.length - 1) ? "," : ""   
+            ((i < emails.length - 1) ? "," : "")  
     }
     query += ";"; 
     //Define a query de procura e por fim apaga a tabela temporária
     query += "SELECT IF(usuario.Id IS NULL, 0, 1) FROM tmp LEFT JOIN usuario ON tmp.email = usuario.Email " +
         " OR tmp.telefone = usuario.Telefone; DROP TABLE tmp; " 
     console.log(query);
+    console.log(emails);
     //Executa a query
     db.query(query, [], function(err, rows, fields) {
         if (err) 
