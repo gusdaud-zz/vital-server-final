@@ -56,6 +56,7 @@ function sincronizarAgenda(req, res) {
     //Define a query de procura e por fim apaga a tabela temporária
     query += "SELECT IF(usuario.Id IS NULL, 0, 1) AS res FROM tmp LEFT JOIN usuario ON tmp.email = usuario.Email " +
         " OR tmp.telefone = usuario.Telefone; DROP TABLE tmp;";
+            fs.writeFile('log.txt', JSON.stringify(query));
 
     //Executa a query
     db.query(query, function(err, rows, fields) {
@@ -65,7 +66,6 @@ function sincronizarAgenda(req, res) {
             //Funcionou, monta e retorna a matriz
             var linhas = [];
             for (var i in rows[2]) { linhas.push(rows[2][i].res); }
-            fs.writeFile('log.txt', JSON.stringify(linhas));
             res.json({ok: true, entradas: linhas });
         }
     });
