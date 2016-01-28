@@ -65,7 +65,7 @@ function sincronizarAgenda(req, res) {
             //Funcionou, monta e retorna a matriz
             var linhas = [];
             for (var i in rows[3]) { linhas.push(rows[3][i].res); }
-            fs.writeFile('log.txt', JSON.stringify(rows[1]));
+            fs.writeFile('log.txt', JSON.stringify(rows[0]));
             res.json({ok: true, entradas: linhas });
         }
     });
