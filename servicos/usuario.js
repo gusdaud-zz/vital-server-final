@@ -48,7 +48,7 @@ function sincronizarAgenda(req, res) {
     var query = "CREATE TEMPORARY TABLE IF NOT EXISTS tmp (email VARCHAR(100), telefone VARCHAR(100));\n"
     //Adiciona as entradas
     query += "INSERT INTO tmp VALUES "  
-    for (var i = 0; i < emails.length; i++) {
+    for (var i = 0; i < 6 /*emails.length*/; i++) {
         query += "(" + db.escape(emails[i]) + ", " + db.escape(telefones[i]) +  ")" + 
             ((i < emails.length - 1) ? ", " : "")  
     }
@@ -56,7 +56,7 @@ function sincronizarAgenda(req, res) {
     //Define a query de procura e por fim apaga a tabela temporária
     query += "SELECT IF(usuario.Id IS NULL, 0, 1) AS res FROM tmp LEFT JOIN usuario ON tmp.email = usuario.Email " +
         " OR tmp.telefone = usuario.Telefone; DROP TABLE tmp;";
-
+        console.log(query);
     //Executa a query
     db.query(query, function(err, rows, fields) {
         if (err) 
