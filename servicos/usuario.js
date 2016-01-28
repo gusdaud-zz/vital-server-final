@@ -64,7 +64,7 @@ function sincronizarAgenda(req, res) {
         else {
             //Funcionou, monta e retorna a matriz
             var linhas = [];
-            for (var i in rows[1]) { linhas.push(rows[1][i].res); }
+            for (var i in rows[2]) { linhas.push(rows[2][i].res); }
             console.log(linhas);
             res.json({ok: true, entradas: linhas });
         }
