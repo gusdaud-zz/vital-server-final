@@ -7,7 +7,8 @@ var _db = null;
 /* Conectar com o banco de dados */
 function conectar() {
    //Cria a conexão
-   _db = mysql.createConnection({
+   _db = mysql.createPool({
+        connectionLimit : 10,
         host     : config.mysql.servidor,
         user     : config.mysql.usuario,
         password : config.mysql.senha,
