@@ -105,6 +105,7 @@ function retornarUsuario(token, req, res) {
         ' ON Sessao.Usuario = Usuario.Id  WHERE Sessao.Id=?', [token], 
         function(err, rows, fields) {
             if (!err) { 
+                console.log(rows[0].Telefone);
                 if (rows.length > 0)
                     res.json({ok: true, token: token, 
                         usuario: {Telefone: rows[0].Telefone, Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, 
