@@ -107,7 +107,8 @@ function retornarUsuario(token, req, res) {
             if (!err) { 
                 if (rows.length > 0)
                     res.json({ok: true, token: token, 
-                        usuario: {Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, Email: rows[0].Email},
+                        usuario: {Telefone: rows[0].Telefone, Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, 
+                            Email: rows[0].Email},
                         publico: JSON.parse(rows[0].Publico)})
                 else
                     res.json({ erro: "errodb" })
