@@ -101,11 +101,10 @@ function limparRegistrosSemConfirmacao() {
 
 /* Retorna os dados do usuário */
 function retornarUsuario(token, req, res) {
-    db.query('SELECT Nome, Sobrenome, Email, Publico FROM Sessao LEFT JOIN Usuario' +
+    db.query('SELECT Telefone, Nome, Sobrenome, Email, Publico FROM Sessao LEFT JOIN Usuario' +
         ' ON Sessao.Usuario = Usuario.Id  WHERE Sessao.Id=?', [token], 
         function(err, rows, fields) {
             if (!err) { 
-                console.log(rows[0].Telefone);
                 if (rows.length > 0)
                     res.json({ok: true, token: token, 
                         usuario: {Telefone: rows[0].Telefone, Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, 
