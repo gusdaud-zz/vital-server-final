@@ -104,7 +104,7 @@ function validarConvite(req, res) {
         "associacao.idAssociado = usuario.Id WHERE associacao.IdProprietario=? AND " +
         "(associacao.ConviteChave=? OR usuario.Email=? OR usuario.Telefone=?)", 
         [req.usuario, dados.chave, dados.chave, dados.chave], function(err, rows, fields) {
-        console.log(rows.count);
+        console.log(err);
         if (err) 
             res.json({erro: "erroaoconvidar"})
         else 
