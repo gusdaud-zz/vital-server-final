@@ -19,6 +19,7 @@ exports.iniciar = function(app, _db, express) {
     app.post('/servicos/usuario/uploadfoto', upload.single('conteudo'), uploadFoto);
     app.post('/servicos/usuario/limparfoto', limparFoto);
     app.post('/servicos/usuario/sincronizaragenda', sincronizarAgenda);
+    app.post('/servicos/usuario/validarconvite', validarConvite);
     app.post('/servicos/usuario/enviarconvite', enviarConvite);
 }
 
@@ -73,12 +74,11 @@ function sincronizarAgenda(req, res) {
     
 }
 
-/* Envia um convite */
-function enviarConvite(req, res) {
+/* Processa antes de validar */
+function processarValidar(req, res) {
     //Carrega as variáveis
     var telefone = req.body.telefone;
     var email = req.body.email;
-    var nome = req.body.nome;
     var chave = "", query = "";
     //Faz as validações e prepara a query
     if (typeof telefone == "string" && telefone.length > 0) {
@@ -91,14 +91,52 @@ function enviarConvite(req, res) {
         res.json({err: "parametrosinvalidos"});
         return;
     }
+    return {chave: chave, query: query, nome: req.body.nome};
+}
+
+/* Valida antes de enviar um convite */
+function validarConvite(req, res) {
+    //Preparar
+    var dados = processarValidar(req, res);
+    if (!dados) {return}
+    //Executa a query para verificar se o convite já foi enviado ou se já está associado
+    db.query("SELECT associacao.Id as A, usuario.ID as B FROM associacao LEFT JOIN usuario ON " +
+        "associacao.idAssociado = usuario.Id WHERE associacao.IdProprietario=? AND " +
+        "(associacao.ConviteChave=? OR usuario.Email=? OR usuario.Telefone=?)", 
+        [req.usuario, dados.chave, dados.chave, dados.chave], function(err, rows, fields) {
+        if (err) 
+            res.json({erro: "erroaoconvidar"})
+        else 
+            if (rows.count >= 0) 
+                //Já está associado
+                res.json({ok: true, associado: true, existe: true, aprovado: rows[0].B != null})
+            else 
+                //Não está associado, verifica se existe
+                db.query("SELECT Id FROM usuario WHERE " + dados.query, [dados.chave], function(err, rows, fields) {
+                    if (err) 
+                        res.json({erro: "erroaoconvidar"})
+                    else if (rows.count > 0)
+                        res.json({ok: true, associado: false, existe: true, aprovado: false})
+                    else
+                        res.json({ok: true, associado: false, existe: false, aprovado: false})
+                })
+    });
+}
+
+/* Envia um convite */
+function enviarConvite(req, res) {
+    //Preparar
+    var dados = processarValidar(req, res);
+    if (!dados) {return}
+
     //Executa a query
-    db.query("SELECT Id FROM usuario WHERE " + query, [chave], function(err, rows, fields) {
+    db.query("SELECT Id FROM usuario WHERE " + dados.query, [dados.chave], function(err, rows, fields) {
         if (err) 
             res.json({erro: "erroaoconvidar"})
         else {
             //Query ocorreu bem
             var dados = {IdProprietario: req.usuario, idAssociado: (rows.length == 0) ? null : rows[0].Id,
-                NomeAssociado: nome, ConviteChave: (rows.length == 0) ? chave : null };
+                NomeAssociado: dados.nome, ConviteChave: (rows.length == 0) ? dados.chave : null };
             //Adiciona a nova entrada
             db.query("INSERT INTO associacao SET ?", dados, function(err, result) {
                 if (err) 
