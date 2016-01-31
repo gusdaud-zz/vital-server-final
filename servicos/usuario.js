@@ -19,6 +19,7 @@ exports.iniciar = function(app, _db, express) {
     app.post('/servicos/usuario/uploadfoto', upload.single('conteudo'), uploadFoto);
     app.post('/servicos/usuario/limparfoto', limparFoto);
     app.post('/servicos/usuario/sincronizaragenda', sincronizarAgenda);
+    app.post('/servicos/usuario/enviarConvite', enviarConvite);
 }
 
 /* Retorna os dados do usuário */
@@ -41,13 +42,13 @@ function dadosUsuario(req, res) {
 /* Para sincronizar a agenda */
 function sincronizarAgenda(req, res) {
     //Carrega as variáveis
-    var emails = req.body.emails
-    var telefones = req.body.telefones
+    var emails = req.body.emails;
+    var telefones = req.body.telefones;
     //Prepara a query
     //Cria a tabela temporária
-    var query = "CREATE TEMPORARY TABLE IF NOT EXISTS tmp (ordem INT, email VARCHAR(100), telefone VARCHAR(100));\n"
+    var query = "CREATE TEMPORARY TABLE IF NOT EXISTS tmp (ordem INT, email VARCHAR(100), telefone VARCHAR(100));\n";
     //Adiciona as entradas
-    query += "INSERT INTO tmp VALUES "  
+    query += "INSERT INTO tmp VALUES ";
     for (var i = 0; i < emails.length; i++) {
         query += "(" + (i + 1) + ", " + db.escape(emails[i]) + ", " + db.escape(telefones[i]) +  ")" + 
             ((i < emails.length - 1) ? ", " : "")  
@@ -67,6 +68,46 @@ function sincronizarAgenda(req, res) {
             var linhas = [];
             for (var i in rows[2]) { linhas.push(rows[2][i].res); }
             res.json({ok: true, entradas: linhas });
+        }
+    });
+    
+}
+
+/* Envia um convite */
+function enviarConvite(req, res) {
+    //Carrega as variáveis
+    var telefone = req.body.telefone;
+    var email = req.body.email;
+    var nome = req.body.nome;
+    var chave = "", query = "";
+    //Faz as validações e prepara a query
+    if (typeof telefone == "string" && telefone.length > 0) {
+        chave = telefone
+        query = "telefone = ?" 
+    } else if (typeof email == "string" && email.length > 0) {
+        chave = email
+        query = "email = ?" 
+    } else {
+        res.json({err: "parametrosinvalidos"});
+        return;
+    }
+    //Executa a query
+    db.query("SELECT Id FROM usuario WHERE " + query, [chave], function(err, rows, fields) {
+        if (err) 
+            res.json({erro: "erroaoconvidar"})
+        else {
+            //Query ocorreu bem
+            var dados = {IdProprietario: req.usuario, idAssociado: (rows.length == 0) ? null : rows[0].Id,
+                NomeAssociado: nome, ConviteChave: (rows.length == 0) ? chave : null };
+            //Adiciona a nova entrada
+            db.query("INSERT INTO associacao SET ?", dados, function(err, result) {
+                if (err) 
+                    //Caso tenha ocorrido um erro ao tentar adicionar a entrada
+                    res.json({erro: "erroaoconvidar"})
+                else 
+                    //Tudo funcionou bem, retorna
+                    res.json({ok: true, existe: rows.length > 0})                
+            })
         }
     });
     
