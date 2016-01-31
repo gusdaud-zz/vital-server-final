@@ -19,7 +19,7 @@ exports.iniciar = function(app, _db, express) {
     app.post('/servicos/usuario/uploadfoto', upload.single('conteudo'), uploadFoto);
     app.post('/servicos/usuario/limparfoto', limparFoto);
     app.post('/servicos/usuario/sincronizaragenda', sincronizarAgenda);
-    app.post('/servicos/usuario/enviarConvite', enviarConvite);
+    app.post('/servicos/usuario/enviarconvite', enviarConvite);
 }
 
 /* Retorna os dados do usuário */
