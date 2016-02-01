@@ -115,7 +115,7 @@ function validarConvite(req, res) {
                 db.query("SELECT Id FROM usuario WHERE " + dados.query, [dados.chave], function(err, rows, fields) {
                     if (err) 
                         res.json({erro: "erroaoconvidar"})
-                    else if (rows.count > 0)
+                    else if (rows.length > 0)
                         res.json({ok: true, associado: false, existe: true, aprovado: false})
                     else
                         res.json({ok: true, associado: false, existe: false, aprovado: false})
