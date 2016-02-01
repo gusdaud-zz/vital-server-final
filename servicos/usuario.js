@@ -136,10 +136,10 @@ function enviarConvite(req, res) {
             res.json({erro: "erroaoconvidar"})
         else {
             //Query ocorreu bem
-            var dados = {IdProprietario: req.usuario, idAssociado: (rows.length == 0) ? null : rows[0].Id,
+            var inserir = {IdProprietario: req.usuario, idAssociado: (rows.length == 0) ? null : rows[0].Id,
                 NomeAssociado: dados.nome, ConviteChave: (rows.length == 0) ? dados.chave : null };
             //Adiciona a nova entrada
-            db.query("INSERT INTO associacao SET ?", dados, function(err, result) {
+            db.query("INSERT INTO associacao SET ?", inserir, function(err, result) {
                 if (err) 
                     //Caso tenha ocorrido um erro ao tentar adicionar a entrada
                     res.json({erro: "erroaoconvidar"})
