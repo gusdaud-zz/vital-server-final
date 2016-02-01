@@ -100,7 +100,7 @@ function limparRegistrosSemConfirmacao() {
 }
 
 /* Retorna os dados do usuário */
-function retornarUsuario(token, req, res) {
+function retornarUsuario(id, token, req, res) {
     db.query('SELECT Telefone, Nome, Sobrenome, Email, Publico FROM Sessao LEFT JOIN Usuario' +
         ' ON Sessao.Usuario = Usuario.Id  WHERE Sessao.Id=?', [token], 
         function(err, rows, fields) {
@@ -110,7 +110,7 @@ function retornarUsuario(token, req, res) {
                     db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome' + 
                         ', associacao.IdAssociado as id, associacao.Aprovado as aprovado FROM associacao ' + 
                         'LEFT JOIN usuario WHERE associacao.idAssociado = usuario.ID WHERE IdProprietario=?', 
-                        [req.usuario], function(err, rows, fields) { 
+                        [id], function(err, rows, fields) { 
                         if (err) {
                             res.json({ erro: "errodb", detalhes: err });
                             console.log(err);
@@ -333,7 +333,7 @@ function loginTelefone(req, res) {
                     if (err) 
                         res.json({ erro: "erroaogerartoken" } )
                     else
-                        retornarUsuario(token, req, res)
+                        retornarUsuario(rows[0].Id, token, req, res)
                 });
             }
         }
