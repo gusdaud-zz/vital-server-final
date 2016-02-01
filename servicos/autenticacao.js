@@ -110,16 +110,15 @@ function retornarUsuario(id, token, req, res) {
                     db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome' + 
                         ', associacao.IdAssociado as id, (associacao.Aprovado = 1) as aprovado FROM associacao ' + 
                         'LEFT JOIN usuario ON associacao.idAssociado = usuario.ID WHERE IdProprietario=?', 
-                        [id], function(err, rows, fields) { 
+                        [id], function(err, rows2, fields) { 
                         if (err)
                             res.json({ erro: "errodb", detalhes: err });
                         else {
                             //Monta as associacoes
                             var associacoes = [];
-                            for (var i = 0; i < rows.length; i++) {
-                                associacoes.push({Nome: rows[i].nome, Id: rows[i].id, Aprovado: rows[i].aprovado});
+                            for (var i = 0; i < rows2.length; i++) {
+                                associacoes.push({Nome: rows2[i].nome, Id: rows2[i].id, Aprovado: rows2[i].aprovado});
                             }
-                            console.log(associacoes);
                             //Retorna os dados 
                             res.json({ok: true, token: token, 
                                 usuario: {Telefone: rows[0].Telefone, Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, 
