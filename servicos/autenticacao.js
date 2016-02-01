@@ -108,7 +108,7 @@ function retornarUsuario(id, token, req, res) {
                 if (rows.length > 0)
                     //Se tudo funcionar bem, procura pelos usuários associados
                     db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome' + 
-                        ', associacao.IdAssociado as id, (associacao.Aprovado = 0) as aprovado FROM associacao ' + 
+                        ', associacao.IdAssociado as id, (associacao.Aprovado = 1) as aprovado FROM associacao ' + 
                         'LEFT JOIN usuario ON associacao.idAssociado = usuario.ID WHERE IdProprietario=?', 
                         [id], function(err, rows, fields) { 
                         if (err)
@@ -123,7 +123,7 @@ function retornarUsuario(id, token, req, res) {
                             //Retorna os dados 
                             res.json({ok: true, token: token, 
                                 usuario: {Telefone: rows[0].Telefone, Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, 
-                                    Email: rows[0].Email}, publico: JSON.parse(rows[0].Publico)})
+                                    Email: rows[0].Email}, publico: JSON.parse(rows[0].Publico), associacoes: associacoes})
                         }
                         
                     })
