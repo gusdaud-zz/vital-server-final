@@ -100,7 +100,7 @@ function validarConvite(req, res) {
     var dados = processarValidar(req, res);
     if (!dados) {return}
     //Executa a query para verificar se o convite já foi enviado ou se já está associado
-    db.query("SELECT associacao.Id as A, usuario.ID as B FROM associacao LEFT JOIN usuario ON " +
+    db.query("SELECT associacao.Aprovado as A FROM associacao LEFT JOIN usuario ON " +
         "associacao.idAssociado = usuario.Id WHERE associacao.IdProprietario=? AND " +
         "(associacao.ConviteChave=? OR usuario.Email=? OR usuario.Telefone=?)", 
         [req.usuario, dados.chave, dados.chave, dados.chave], function(err, rows, fields) {
@@ -109,7 +109,7 @@ function validarConvite(req, res) {
         else 
             if (rows.length > 0) 
                 //Já está associado
-                res.json({ok: true, associado: true, existe: true, aprovado: rows[0].B != null})
+                res.json({ok: true, associado: true, existe: true, aprovado: rows[0].A == 1})
             else 
                 //Não está associado, verifica se existe
                 db.query("SELECT Id FROM usuario WHERE " + dados.query, [dados.chave], function(err, rows, fields) {
