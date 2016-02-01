@@ -123,8 +123,7 @@ function retornarUsuario(id, token, req, res) {
                             //Retorna os dados
                             res.json({ok: true, token: token, 
                                 usuario: {Telefone: rows[0].Telefone, Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, 
-                                    Email: rows[0].Email}, publico: JSON.parse(rows[0].Publico),
-                                    associacoes: associacoes})
+                                    Email: rows[0].Email}, publico: JSON.parse(rows[0].Publico)})
                         }
                         
                     })
