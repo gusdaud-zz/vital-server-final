@@ -117,14 +117,14 @@ function retornarUsuario(id, token, req, res) {
                             //Monta as associacoes
                             var associacoes = [];
                             for (var i = 0; i < rows.length; i++) {
-                                associacoes.push({Nome: rows[i].nome, Id: rows[i].Id, Aprovado: rows[i].Aprovado});
+                                associacoes.push({Nome: rows[i].nome, Id: rows[i].id, Aprovado: rows[i].sprovado});
                             }
                             console.log(associacoes);
                             //Retorna os dados
                             res.json({ok: true, token: token, 
                                 usuario: {Telefone: rows[0].Telefone, Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, 
                                     Email: rows[0].Email}, publico: JSON.parse(rows[0].Publico),
-                                    Associacoes: associacoes})
+                                    associacoes: associacoes})
                         }
                         
                     })
