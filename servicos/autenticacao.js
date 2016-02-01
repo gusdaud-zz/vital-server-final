@@ -117,7 +117,7 @@ function retornarUsuario(id, token, req, res) {
                             //Monta as associacoes
                             var associacoes = [];
                             for (var i = 0; i < rows.length; i++) {
-                                associacoes.push({Nome: rows[i].nome, Id: rows[i].id, Aprovado: rows[i].sprovado});
+                                associacoes.push({Nome: rows[i].nome, Id: rows[i].id, Aprovado: rows[i].aprovado});
                             }
                             console.log(associacoes);
                             //Retorna os dados
