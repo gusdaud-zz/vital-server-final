@@ -119,6 +119,7 @@ function retornarUsuario(id, token, req, res) {
                             for (var i = 0; i < rows.length; i++) {
                                 associacoes.push({Nome: rows[i].nome, Id: rows[i].Id, Aprovado: rows[i].Aprovado});
                             }
+                            console.log(associacoes);
                             //Retorna os dados
                             res.json({ok: true, token: token, 
                                 usuario: {Telefone: rows[0].Telefone, Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, 
