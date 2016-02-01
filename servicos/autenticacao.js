@@ -111,9 +111,10 @@ function retornarUsuario(token, req, res) {
                         ', associacao.IdAssociado as id, associacao.Aprovado as aprovado FROM associacao ' + 
                         'LEFT JOIN usuario WHERE associacao.idAssociado = usuario.ID WHERE IdProprietario=?', 
                         [req.usuario], function(err, rows, fields) { 
-                        if (err)
-                            res.json({ erro: "errodb", detalhes: err })
-                        else {
+                        if (err) {
+                            res.json({ erro: "errodb", detalhes: err });
+                            console.log(err);
+                        } else {
                             //Monta as associacoes
                             var associacoes = [];
                             for (var i = 0; i < rows.length; i++) {
