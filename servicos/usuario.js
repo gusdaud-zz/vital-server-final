@@ -128,6 +128,7 @@ function enviarConvite(req, res) {
     //Preparar
     var dados = processarValidar(req, res);
     if (!dados) {return}
+    console.log(dados);
 
     //Executa a query
     db.query("SELECT Id FROM usuario WHERE " + dados.query, [dados.chave], function(err, rows, fields) {
