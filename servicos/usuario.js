@@ -130,7 +130,7 @@ function enviarConvite(req, res) {
     if (!dados) {return}
 
     //Executa a query
-    db.query("SELECT Id FROM usuario WHERE " + dados.query, [dados.chave], function(err, rows, fields) {
+    db.query("SELECT Nome, Id FROM usuario WHERE " + dados.query, [dados.chave], function(err, rows, fields) {
         if (err) 
             res.json({erro: "erroaoconvidar"})
         else {
@@ -144,7 +144,8 @@ function enviarConvite(req, res) {
                     res.json({erro: "erroaoconvidar"})
                 else 
                     //Tudo funcionou bem, retorna
-                    res.json({ok: true, existe: rows.length > 0})                
+                    res.json({ok: true, dados: {Nome: rows[0].Nome || dados.nome, Id: rows[0].id, Aprovado: false}, 
+                        existe: rows.length > 0})                
             })
         }
     });
