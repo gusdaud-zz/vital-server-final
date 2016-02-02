@@ -183,7 +183,7 @@ function uploadFoto(req, res) {
 /* Retorna a foto do usuário */
 function retornarFoto(req, res) {
     //Obtém os dados do usuário
-    var usuario = req.usuario || req.query.usuario;
+    var usuario = req.query.usuario || req.usuario;
     db.query('SELECT Nome, Foto FROM Usuario WHERE Id=?', [usuario], 
         function(err, rows, fields) {
         if (err) 
