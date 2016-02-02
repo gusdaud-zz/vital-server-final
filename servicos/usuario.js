@@ -146,7 +146,7 @@ function enviarConvite(req, res) {
                     //Prepara variáveis que serão usadas
                     var nome = (rows.length == 0) ? dados.nome : rows[0].Nome;
                     var id = (rows.length == 0) ? null : rows[0].Id;
-                    console.log(rows[0]);
+                    console.log(id);
                     //Tudo funcionou bem, retorna
                     res.json({ok: true, dados: {Nome: nome, Id: id, Aprovado: false}, 
                         existe: rows.length > 0})          
