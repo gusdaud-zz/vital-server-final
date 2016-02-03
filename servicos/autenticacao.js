@@ -120,7 +120,7 @@ function retornarUsuario(id, token, req, res) {
                             var associacoes = [];
                             for (var i = 0; i < rows2.length; i++) {
                                 associacoes.push({Nome: rows2[i].nome, IdAssociado: rows2[i].idassociado, 
-                                    Id: rows[2].id, Aprovado: rows2[i].aprovado, Chave: rows2[i].chave});
+                                    Id: rows2[i].id, Aprovado: rows2[i].aprovado, Chave: rows2[i].chave});
                             }
                             //Retorna os dados 
                             res.json({ok: true, token: token, 
