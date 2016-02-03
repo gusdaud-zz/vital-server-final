@@ -129,8 +129,8 @@ function desassociar(req, res) {
     var id = req.body.id;
     db.query("DELETE FROM associacao WHERE Id=? AND IdProprietario=?", [id, req.usuario], function(err, result) {
     //Verifica o retorno da tentativa
-    console.log(err);
-    console.log(result);
+    console.log(id);
+    console.log(req.usuario);
     if (err || (result.affectedRows == 0)) 
         res.json({erro: "erroaodesassociar", detalhes: err})
     else
