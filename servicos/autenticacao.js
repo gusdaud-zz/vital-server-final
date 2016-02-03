@@ -234,7 +234,6 @@ function enviarConfirmacao(Nome, Telefone, Email, confirmarTelefone, confirmarEm
 
 /* Atualiza as associações do usuário */
 function atualizarAssociacao(id) {
-    console.log(id);
     //Obtém os dados do usuário
     db.query("SELECT Id, Email, Telefone FROM usuario WHERE Id=?", [id], 
         function(err, rows, fields) {
