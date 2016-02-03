@@ -252,15 +252,18 @@ function confirmarTelefone(req, res) {
     var codigo = req.body.codigo;
     var telefone = req.body.telefone;
     //Procura para verificar se existe
-    db.query("UPDATE Usuario SET ConfirmarTelefone=NULL WHERE ConfirmarTelefone=? AND Telefone=?", 
-        [codigo, telefone], function(err, result) {
+    db.query("SELECT Id FROM Usuario WHERE ConfirmarTelefone=? AND Telefone=?;" + 
+        "UPDATE Usuario SET ConfirmarTelefone=NULL WHERE ConfirmarTelefone=? AND Telefone=?", 
+        [codigo, telefone, codigo, telefone], function(err, queries, fields) {
             if (err)
                 res.json({erro: "erroconfirmar" })
-            else if (result.affectedRows == 0) 
+            else if (queries[1].affectedRows == 0) 
                 res.json({erro: "codigoinvalido" })
+            else if (queries[0].length == 0)
+                res.json({erro: "erroconfirmar" })
             else {
                 res.json({ok: true });
-                atualizarAssociacao(req.usuario);
+                atualizarAssociacao(queries[0][0].Id);
             }
         })
 }
@@ -276,6 +279,8 @@ function confirmarEmail(req, res) {
             if (err)
                 res.send(traducao(lingua,"emailconfirmacaoerro"))
             else if (queries[1].affectedRows == 0) 
+                res.send(traducao(lingua,"emailconfirmacaoerro"))
+            else if (queries[0].length == 0)
                 res.send(traducao(lingua,"emailconfirmacaoerro"))
             else {
                 res.sendFile(path.join(__dirname, "../templates/") + 
