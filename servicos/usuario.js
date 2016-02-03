@@ -21,6 +21,7 @@ exports.iniciar = function(app, _db, express) {
     app.post('/servicos/usuario/sincronizaragenda', sincronizarAgenda);
     app.post('/servicos/usuario/validarconvite', validarConvite);
     app.post('/servicos/usuario/enviarconvite', enviarConvite);
+    app.post('/servicos/usuario/desassociar', desassociar);
 }
 
 /* Retorna os dados do usuário */
@@ -121,6 +122,19 @@ function validarConvite(req, res) {
                         res.json({ok: true, associado: false, existe: false, aprovado: false})
                 })
     });
+}
+
+/* Desassociar um usuário do atual */
+function desassociar(req, res) {
+    var id = req.body.id;
+    db.query("DELETE FROM associacao WHERE Id=? AND IdProprietario=?", [id, req.usuario], function(err, result) {
+    //Verifica o retorno da tentativa
+    if (err || (result.affectedRows == 0)) 
+        res.json({erro: "erroaodesassociar", detalhes: err})
+    else
+        res.json({ok: true});
+    })
+
 }
 
 /* Envia um convite */
