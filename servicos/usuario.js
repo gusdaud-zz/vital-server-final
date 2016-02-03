@@ -162,7 +162,7 @@ function enviarConvite(req, res) {
                     //Prepara variáveis que serão usadas
                     var nome = (rows.length == 0) ? dados.nome : rows[0].Nome;
                     var idassociado = (rows.length == 0) ? null : rows[0].Id;
-                    var id = result.result.insertId;
+                    var id = result.insertId;
                     //Tudo funcionou bem, retorna
                     res.json({ok: true, dados: {Nome: nome, IdAssociado: idassociado, Aprovado: false, 
                         Chave: dados.chave, Id: id }, existe: rows.length > 0})          
