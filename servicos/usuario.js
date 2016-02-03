@@ -22,6 +22,7 @@ exports.iniciar = function(app, _db, express) {
     app.post('/servicos/usuario/validarconvite', validarConvite);
     app.post('/servicos/usuario/enviarconvite', enviarConvite);
     app.post('/servicos/usuario/desassociar', desassociar);
+    app.post('/servicos/usuario/reenviarconvitepush', reenviarConvitePush);
 }
 
 /* Retorna os dados do usuário */
@@ -137,6 +138,17 @@ function desassociar(req, res) {
 
 }
 
+/* Reenvia convite via push para usuários existentes */
+function reenviarConvitePush(req, res) {
+    var id = req.body.id;
+    enviarConvitePush(id);
+    res.json({ok: true})
+}
+
+/* Envia convite via push para usuários existentes */
+function enviarConvitePush(id) {
+}
+
 /* Envia um convite */
 function enviarConvite(req, res) {
     //Preparar
@@ -161,6 +173,8 @@ function enviarConvite(req, res) {
                     var nome = (rows.length == 0) ? dados.nome : rows[0].Nome;
                     var idassociado = (rows.length == 0) ? null : rows[0].Id;
                     var id = result.insertId;
+                    //Envia o convite push
+                    enviarConvitePush(id);
                     //Tudo funcionou bem, retorna
                     res.json({ok: true, dados: {Nome: nome, IdAssociado: idassociado, Aprovado: false, 
                         Chave: dados.chave, Id: id }, existe: rows.length > 0})          
