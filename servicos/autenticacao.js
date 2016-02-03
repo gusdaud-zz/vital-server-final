@@ -175,14 +175,14 @@ function criarNovoUsuario(req, res) {
         res.json({erro: "senhainvalida" })
         return;
     }
-    //Verifica se o email está cadastrado
-    db.query("SELECT Id FROM Usuario WHERE Email=? AND ConfirmarTelefone IS NULL", [Email], 
+    //Verifica se o email ou telefone estão cadastrados
+    db.query("SELECT Id FROM Usuario WHERE Email=? OR Telefone=? AND ConfirmarTelefone IS NULL", [Email, Telefone], 
         function(err, rows, fields) {
         //Se houver algum erro na verificação
         if (err) 
             res.json({erro: "errocriar", detalhes: err })
         else {
-            //Se já houver algum usuário registrado com este e-mail
+            //Se já houver algum usuário registrado com este e-mail ou telefone
             if (rows.length > 0)
                 res.json({erro: "existe" })
             else {
@@ -232,6 +232,21 @@ function enviarConfirmacao(Nome, Telefone, Email, confirmarTelefone, confirmarEm
     
 }
 
+/* Atualiza as associações do usuário */
+function atualizarAssociacao(id) {
+    console.log(id);
+    //Obtém os dados do usuário
+    db.query("SELECT Id, Email, Telefone FROM usuario WHERE Id=?", [id], 
+        function(err, rows, fields) {
+        if (!err && (rows.length > 0)) {
+            //Atualiza a tabela de associações com o novo id
+            db.query("UPDATE associacao SET IdAssociado=?, ConviteChave=NULL, NomeAssociado=NULL" +
+                " WHERE ConviteChave=? OR ConviteChave=?", [id, rows[0].Email, rows[0].Telefone])
+        }
+    })
+    
+}
+
 /* Confirmar telefone */
 function confirmarTelefone(req, res) {
     var codigo = req.body.codigo;
@@ -243,8 +258,10 @@ function confirmarTelefone(req, res) {
                 res.json({erro: "erroconfirmar" })
             else if (result.affectedRows == 0) 
                 res.json({erro: "codigoinvalido" })
-            else 
-                res.json({ok: true })
+            else {
+                res.json({ok: true });
+                atualizarAssociacao(req.usuario);
+            }
         })
 }
 
@@ -253,15 +270,18 @@ function confirmarEmail(req, res) {
     var codigo = req.query.codigo;
     var lingua = req.query.lingua;
     //Procura para verificar se existe
-    db.query("UPDATE Usuario SET ConfirmarEmail=NULL WHERE ConfirmarEmail=?", [codigo], 
-        function(err, result) {
+    db.query("SELECT Id FROM Usuario WHERE ConfirmarEmail=?; " +
+        "UPDATE Usuario SET ConfirmarEmail=NULL WHERE ConfirmarEmail=?", [codigo, codigo], 
+        function(err, queries, fields) {
             if (err)
                 res.send(traducao(lingua,"emailconfirmacaoerro"))
-            else if (result.affectedRows == 0) 
+            else if (queries[1].affectedRows == 0) 
                 res.send(traducao(lingua,"emailconfirmacaoerro"))
-            else 
+            else {
                 res.sendFile(path.join(__dirname, "../templates/") + 
-                    traducao(lingua, "emailconfirmacaosucessohtml"))
+                    traducao(lingua, "emailconfirmacaosucessohtml"));
+                atualizarAssociacao(queries[0][0].Id);
+            }
         })
 }
 
