@@ -109,7 +109,7 @@ function retornarUsuario(id, token, req, res) {
                     //Se tudo funcionar bem, procura pelos usuários associados
                     db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome, ' + 
                         'associacao.IdAssociado as idassociado, (associacao.Aprovado = 1) as aprovado, ' +
-                        'associacao.Id as id ' + 
+                        'associacao.Id as id, ' + 
                         'IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave  FROM associacao ' + 
                         'LEFT JOIN usuario ON associacao.idAssociado = usuario.ID WHERE IdProprietario=?', 
                         [id], function(err, rows2, fields) { 
