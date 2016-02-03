@@ -108,7 +108,8 @@ function retornarUsuario(id, token, req, res) {
                 if (rows.length > 0)
                     //Se tudo funcionar bem, procura pelos usuários associados
                     db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome, ' + 
-                        'associacao.IdAssociado as id, (associacao.Aprovado = 1) as aprovado, ' +
+                        'associacao.IdAssociado as idassociado, (associacao.Aprovado = 1) as aprovado, ' +
+                        'associacao.Id as id ' + 
                         'IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave  FROM associacao ' + 
                         'LEFT JOIN usuario ON associacao.idAssociado = usuario.ID WHERE IdProprietario=?', 
                         [id], function(err, rows2, fields) { 
@@ -118,8 +119,8 @@ function retornarUsuario(id, token, req, res) {
                             //Monta as associacoes
                             var associacoes = [];
                             for (var i = 0; i < rows2.length; i++) {
-                                associacoes.push({Nome: rows2[i].nome, Id: rows2[i].id, 
-                                    Aprovado: rows2[i].aprovado, Chave: rows2[i].chave});
+                                associacoes.push({Nome: rows2[i].nome, IdAssociado: rows2[i].idassociado, 
+                                    Id: rows[2].id, Aprovado: rows2[i].aprovado, Chave: rows2[i].chave});
                             }
                             //Retorna os dados 
                             res.json({ok: true, token: token, 

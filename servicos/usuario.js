@@ -161,10 +161,11 @@ function enviarConvite(req, res) {
                 else {
                     //Prepara variáveis que serão usadas
                     var nome = (rows.length == 0) ? dados.nome : rows[0].Nome;
-                    var id = (rows.length == 0) ? null : rows[0].Id;
+                    var idassociado = (rows.length == 0) ? null : rows[0].Id;
+                    var id = result.result.insertId;
                     //Tudo funcionou bem, retorna
-                    res.json({ok: true, dados: {Nome: nome, Id: id, Aprovado: false, Chave: dados.chave }, 
-                        existe: rows.length > 0})          
+                    res.json({ok: true, dados: {Nome: nome, IdAssociado: idassociado, Aprovado: false, 
+                        Chave: dados.chave, Id: id }, existe: rows.length > 0})          
                 }      
             })
         }
