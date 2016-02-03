@@ -107,8 +107,9 @@ function retornarUsuario(id, token, req, res) {
             if (!err) { 
                 if (rows.length > 0)
                     //Se tudo funcionar bem, procura pelos usuários associados
-                    db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome' + 
-                        ', associacao.IdAssociado as id, (associacao.Aprovado = 1) as aprovado FROM associacao ' + 
+                    db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome, ' + 
+                        'associacao.IdAssociado as id, (associacao.Aprovado = 1) as aprovado, ' +
+                        'IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave  FROM associacao ' + 
                         'LEFT JOIN usuario ON associacao.idAssociado = usuario.ID WHERE IdProprietario=?', 
                         [id], function(err, rows2, fields) { 
                         if (err)
@@ -117,7 +118,8 @@ function retornarUsuario(id, token, req, res) {
                             //Monta as associacoes
                             var associacoes = [];
                             for (var i = 0; i < rows2.length; i++) {
-                                associacoes.push({Nome: rows2[i].nome, Id: rows2[i].id, Aprovado: rows2[i].aprovado});
+                                associacoes.push({Nome: rows2[i].nome, Id: rows2[i].id, 
+                                    Aprovado: rows2[i].aprovado, Chave: rows2[i].chave});
                             }
                             //Retorna os dados 
                             res.json({ok: true, token: token, 
@@ -239,7 +241,7 @@ function atualizarAssociacao(id) {
         function(err, rows, fields) {
         if (!err && (rows.length > 0)) {
             //Atualiza a tabela de associações com o novo id
-            db.query("UPDATE associacao SET IdAssociado=?, ConviteChave=NULL, NomeAssociado=NULL" +
+            db.query("UPDATE associacao SET IdAssociado=?, NomeAssociado=NULL" +
                 " WHERE ConviteChave=? OR ConviteChave=?", [id, rows[0].Email, rows[0].Telefone])
         }
     })

@@ -136,7 +136,7 @@ function enviarConvite(req, res) {
         else {
             //Query ocorreu bem
             var inserir = {IdProprietario: req.usuario, idAssociado: (rows.length == 0) ? null : rows[0].Id,
-                NomeAssociado: dados.nome, ConviteChave: (rows.length == 0) ? dados.chave : null };
+                NomeAssociado: dados.nome, ConviteChave: dados.chave };
             //Adiciona a nova entrada
             db.query("INSERT INTO associacao SET ?", inserir, function(err, result) {
                 if (err) 
@@ -147,7 +147,7 @@ function enviarConvite(req, res) {
                     var nome = (rows.length == 0) ? dados.nome : rows[0].Nome;
                     var id = (rows.length == 0) ? null : rows[0].Id;
                     //Tudo funcionou bem, retorna
-                    res.json({ok: true, dados: {Nome: nome, Id: id, Aprovado: false}, 
+                    res.json({ok: true, dados: {Nome: nome, Id: id, Aprovado: false, Chave: dados.chave }, 
                         existe: rows.length > 0})          
                 }      
             })
