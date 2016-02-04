@@ -47,12 +47,12 @@ function dadosUsuario(req, res) {
 function retornarNotificacoes(req, res) {
     //Executa a query
     db.query("SELECT A.Id as id, B.Nome as nome FROM associacao AS A LEFT JOIN usuario " +
-        "AS B ON A.IdAssociado = B.Id ORDER BY A.DataConvite DESC " +
-        "WHERE A.Reprovado = 0", function(err, rows, fields) {
+        "AS B ON A.IdAssociado = B.Id WHERE A.Reprovado = 0 " + 
+        "ORDER BY A.DataConvite DESC", function(err, rows, fields) {
         if (err) 
             res.json({erro: "erronotificacoes", detalhes: err})
         else {
-            //Funcionou, monta e retorna a matriz
+            //Funcionou, monta a matriz com as notificações e retorna
             var notificacoes = [];
             for (var i in rows) { notificacoes.push( { Tipo: "associacao", Dados: { Id: rows[i].id,
                 Nome: rows[i].nome } }); }
