@@ -14,7 +14,7 @@ var twilio = require('twilio')(config.twilio.sid, config.twilio.token);
 
 /* ##### Para não enviar mensagens pelo twilio até que esteja em produção ##### */
 twilio.sendMessage = function(dados, callback) {
-    console.log("O SMS para " + dados.to + " com a mensagem '" + dados.body + "' não foi enviada propositalmente."  );
+    console.log("O SMS para " + dados.to + " com a mensagem '" + dados.body + "' não foi enviada propositalmente." );
     callback(null, true);
 }
 
