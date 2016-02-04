@@ -13,10 +13,10 @@ var traducao = require("../traducao");
 var twilio = require('twilio')(config.twilio.sid, config.twilio.token);
 
 /* ##### Para não enviar mensagens pelo twilio até que esteja em produção ##### */
-//twilio.sendMessage = function(dados, callback) {
-//    console.log("O SMS para " + dados.to + " com a mensagem '" + dados.body + "' não foi enviada propositalmente."  );
-//    callback(null, true);
-//}
+twilio.sendMessage = function(dados, callback) {
+    console.log("O SMS para " + dados.to + " com a mensagem '" + dados.body + "' não foi enviada propositalmente."  );
+    callback(null, true);
+}
 
 /* Inicia os serviços de autenticação */
 exports.iniciar = function(app, _db, express) {
