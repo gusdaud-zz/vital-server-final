@@ -47,8 +47,8 @@ function dadosUsuario(req, res) {
 function retornarNotificacoes(req, res) {
     //Executa a query
     db.query("SELECT A.Id as id, B.Nome as nome FROM associacao AS A LEFT JOIN usuario " +
-        "AS B ON A.IdAssociado = B.Id WHERE A.Reprovado = 0 " + 
-        "ORDER BY A.DataConvite DESC", function(err, rows, fields) {
+        "AS B ON A.IdAssociado = B.Id WHERE A.Reprovado = 0 AND A.IdAssociado = ? " + 
+        "ORDER BY A.DataConvite DESC", [req.usuario], function(err, rows, fields) {
         if (err) 
             res.json({erro: "erronotificacoes", detalhes: err})
         else {
