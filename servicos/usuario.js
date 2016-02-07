@@ -218,7 +218,7 @@ function responderConvite(req, res) {
         return;
     }
     //Chama a query
-    db.query("UPDATE Associacao SET " + ((aprovado == 1) ? "Aprovado" : "Rejeitado") + 
+    db.query("UPDATE Associacao SET " + ((aprovado == 1) ? "Aprovado" : "Reprovado") + 
         " = 1 WHERE IdAssociado = ? AND Id = ?" , [req.usuario, id], function(err, result) {
         if (err || (result.affectedRows == 0)) 
             res.json({erro: "erroaoassociar", detalhes: err})
