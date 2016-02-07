@@ -50,6 +50,7 @@ function retornarNotificacoes(req, res) {
     db.query("SELECT A.Id as id, B.Nome as nome, A.IdProprietario as IdProprietario " +
         "FROM associacao AS A LEFT JOIN usuario " +
         "AS B ON A.IdProprietario = B.Id WHERE A.Reprovado = 0 AND A.IdAssociado = ? " + 
+        "AND Aprovado = 0 AND Reprovado = 0 " + 
         "ORDER BY A.DataConvite DESC", [req.usuario], function(err, rows, fields) {
         if (err) 
             res.json({erro: "erronotificacoes", detalhes: err})
