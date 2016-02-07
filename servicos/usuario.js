@@ -46,7 +46,7 @@ function dadosUsuario(req, res) {
 /* Retorna as notificações */
 function retornarNotificacoes(req, res) {
     //Executa a query
-    db.query("SELECT A.Id as id, B.Nome as nome, A.IdAssociado as IdAssociado " +
+    db.query("SELECT A.Id as id, B.Nome as nome, A.IdProprietario as IdProprietario " +
         "FROM associacao AS A LEFT JOIN usuario " +
         "AS B ON A.IdProprietario = B.Id WHERE A.Reprovado = 0 AND A.IdAssociado = ? " + 
         "ORDER BY A.DataConvite DESC", [req.usuario], function(err, rows, fields) {
@@ -56,7 +56,7 @@ function retornarNotificacoes(req, res) {
             //Funcionou, monta a matriz com as notificações e retorna
             var notificacoes = [];
             for (var i in rows) { notificacoes.push( { Tipo: "associacao", Dados: { Id: rows[i].id,
-                Nome: rows[i].nome } }); }
+                Nome: rows[i].nome, IdProprietario: rows[i].IdProprietario } }); }
             res.json({ok: true, entradas: notificacoes });
         }
     });
