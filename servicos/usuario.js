@@ -21,6 +21,7 @@ exports.iniciar = function(app, _db, express) {
     app.post('/servicos/usuario/sincronizaragenda', sincronizarAgenda);
     app.post('/servicos/usuario/validarconvite', validarConvite);
     app.post('/servicos/usuario/enviarconvite', enviarConvite);
+    app.post('/servicos/usuario/responderconvite', responderConvite);
     app.post('/servicos/usuario/desassociar', desassociar);
     app.post('/servicos/usuario/reenviarconvitepush', reenviarConvitePush);
     app.post('/servicos/usuario/retornarnotificacoes', retornarNotificacoes);
@@ -201,6 +202,27 @@ function enviarConvite(req, res) {
                 }      
             })
         }
+    });
+    
+}
+
+/* Responde a um convite */
+function responderConvite(req, res) {
+    //Obtém os parâmetros
+    var id = req.body.id;
+    var aprovado = req.body.aprovado;
+    //Valida o parâmetro aceitou
+    if ((aprovado != 0) && (aprovado != 1)) {
+        res.json({erro: "parametrosinvalidos" });
+        return;
+    }
+    //Chama a query
+    db.query("UPDATE Associacao SET " + ((aprovado == 1) ? "Aprovado" : "Rejeitado") + 
+        " = 1 WHERE IdAssociado = ? AND Id = ?" , [req.usuario, id], function(err, result) {
+        if (err || (result.affectedRows == 0)) 
+            res.json({erro: "erroaoassociar", detalhes: err})
+        else
+            res.json({ok: true});
     });
     
 }
