@@ -175,7 +175,6 @@ function reenviarConvitePush(req, res) {
 
 /* Envia convite via push para usuários existentes */
 function enviarConvitePush(lingua, id) {
-    console.log("Pushing");
     //Executa a query
     db.query("SELECT B.Push as token, C.Nome as nome FROM associacao AS A LEFT JOIN usuario AS B " +
         "ON A.IdAssociado = B.Id LEFT JOIN usuario AS C ON A.IdProprietario = C.Id " +
@@ -183,12 +182,11 @@ function enviarConvitePush(lingua, id) {
         function(err, rows, fields) {
             //Se tudo ocorrer bem
             if (!err && rows.length > 0) {
-                console.log(util.format(traducao(lingua, "convite"), rows[0].Nome) + " para push " +
+                console.log(util.format(traducao(lingua, "convite"), rows[0].nome) + " para push " +
                     rows[0].token)
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
-                    alert: util.format(traducao(lingua, "convite"), rows[0].Nome)}, rows[0].token);
-            }  else 
-                console.log(id)
+                    alert: util.format(traducao(lingua, "convite"), rows[0].nome)}, rows[0].token);
+            }  
        })
 }
 
