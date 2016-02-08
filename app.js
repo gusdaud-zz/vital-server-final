@@ -47,6 +47,15 @@ function iniciarApn() {
     opcoes.production = false;
     var apnDesenvolvimento = new apn.Connection(opcoes); 
     
+    //Debug do apn
+    console.log("Debug push");
+    var feedback = new apn.Feedback({"batchFeedback": true, "interval": 300 });
+    feedback.on("feedback", function(devices) {
+        devices.forEach(function(item) {
+            console.log(item)
+        });
+    });
+    
     //Retorno o objeto
     return {
         pushNotification: function(nota, token) {
