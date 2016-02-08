@@ -49,7 +49,9 @@ function iniciarApn() {
     
     //Debug do apn
     console.log("Debug push");
-    var feedback = new apn.Feedback({"batchFeedback": true, "interval": 300 });
+    opcoes.batchFeedback = true;
+    opcoes.interval = 300;
+    var feedback = new apn.Feedback(opcoes);
     feedback.on("feedback", function(devices) {
         devices.forEach(function(item) {
             console.log(item)
