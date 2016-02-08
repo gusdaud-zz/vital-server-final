@@ -169,7 +169,7 @@ function desassociar(req, res) {
 /* Reenvia convite via push para usuários existentes */
 function reenviarConvitePush(req, res) {
     var id = req.body.id;
-    db.query("UPDATE associacao SET DataConvite=NOW() WHERE Id=? AND IdProprietario=?", 
+    db.query("UPDATE associacao SET DataConvite=NOW() WHERE Id=? AND IdProprietario=? AND Reprovado=0", 
         [id, req.usuario]);
     enviarConvitePush(req.lingua, id);
     res.json({ok: true})
@@ -180,7 +180,7 @@ function enviarConvitePush(lingua, id) {
     //Executa a query
     db.query("SELECT B.Push as token, C.Nome as nome FROM associacao AS A LEFT JOIN usuario AS B " +
         "ON A.IdAssociado = B.Id LEFT JOIN usuario AS C ON A.IdProprietario = C.Id " +
-        "WHERE A.Id = ?", [id], 
+        "WHERE A.Id = ? AND A.Reprovado=0", [id], 
         function(err, rows, fields) {
             //Se tudo ocorrer bem
             if (!err && rows.length > 0 && rows[0].token != null)
