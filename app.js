@@ -12,7 +12,8 @@ var express = require('express'),
     usuario = require('./servicos/usuario'),
     dispositivo = require('./servicos/dispositivo'),
     bodyParser = require('body-parser'),
-    app = express();
+    app = express(),
+    apn = require('apn');
 
 /* Inicia o servidor */
 function iniciarServidor(local) {
@@ -34,6 +35,26 @@ function iniciarServidor(local) {
     app.use(bodyParser.urlencoded({ extended: true })); 
 }
 
+/* Inicializa o Apple Notification */
+function iniciarApn() {
+    //Inicializa o objeto para envio de push de produçãp
+    var opcoes = { cert: "certificados/apn-cert-producao.pem", 
+        key: "certificados/apn-key-producao.pem" };
+    var apnProducao = new apn.Connection(opcoes); 
+    //Inicializa o objeto para o envio de push de desenvolvimento
+    opcoes.cert = "certificados/apn-cert-desenvolvimento.pem";
+    opcoes.key = "certificados/apn-key-desenvolvimento.pem";
+    var apnDesenvolvimento = new apn.Connection(opcoes); 
+    //Retorno o objeto
+    return {
+        pushNotification: function(token, nota) {
+            var dispositivo = new apn.Device(token);
+            apnProducao.pushNotification(nota, dispositivo);
+            apnDesenvolvimento.pushDesenvolvimento(nota, dispositivo);
+        }
+    }
+}
+
 /* Para substituir todas as ocorrências de um caractere em um string */
 String.prototype.replaceAll = function (find, replace) {
     var str = this;
@@ -43,7 +64,8 @@ String.prototype.replaceAll = function (find, replace) {
 /* Funções de inicialização */
 var local = os.homedir().toLowerCase().indexOf("gustavo") > 0;
 iniciarServidor(local);
+var apnConn = iniciarApn();
 db.iniciar(app);
 dispositivo.iniciar(app, db, express);
 autenticacao.iniciar(app, db, express);
-usuario.iniciar(app, db, express);
+usuario.iniciar(app, db, express, apnConn);

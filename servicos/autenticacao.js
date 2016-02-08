@@ -52,13 +52,13 @@ function logout(req, res) {
 /* Valida o token */
 exports.validarToken = function(token, callback) {
     //Executa a query
-    db.query('SELECT Usuario from Sessao WHERE Id=?', [token], 
+    db.query('SELECT Usuario, Lingua from Sessao WHERE Id=?', [token], 
          function(err, rows, fields) {
              if (!err) {
                  if (rows.length == 0)
                     callback(false)
                 else
-                    callback(true, rows[0].Usuario)    
+                    callback(true, rows[0].Usuario, rows[0].Lingua)    
              } else {
                  callback(false)
              }
@@ -71,12 +71,13 @@ function requerToken(req, res, next) {
 	var token = req.body.token || req.query.token || req.headers['x-access-token'];
     //Decodifica o token
     if (token) {
-        exports.validarToken(token, function(ok, usuario) {
+        exports.validarToken(token, function(ok, usuario, lingua) {
             if (ok)  //Token válido
             {
                 //Salva o usuário e token
                 req.token = token;
                 req.usuario = usuario;
+                req.lingua = lingua;
                 next()
             }
             else //Token inválido
@@ -315,17 +316,16 @@ function gerarSenha(caracteres, digitos) {
 }
 
 /* Gera um novo token */
-function gerarToken(usuario, dispositivo, push, callback) {
+function gerarToken(usuario, dispositivo, lingua, callback) {
     var expira = new Date();
     expira.setHours(expira.getHours() + 1);
-    var token = {Id: gerarSenha(28), 
+    var token = {Id: gerarSenha(28), Lingua: lingua,
         Expira: expira, Usuario: usuario};
     db.query("INSERT INTO Sessao SET ?", token, function(err, result) {
         callback(err, token.Id);
     });
     //Atualiza com a data e horário do último acesso
-    db.query("UPDATE Usuario SET Acesso=NOW(), Dispositivo=?, Push=? WHERE Id=?", 
-        [dispositivo, push, usuario]);
+    db.query("UPDATE Usuario SET Acesso=NOW(), Dispositivo=? WHERE Id=?", [dispositivo, usuario]);
 }
 
 /* Serviço para login com telefone, retorna token */
@@ -334,7 +334,7 @@ function loginTelefone(req, res) {
     var Telefone = req.body.telefone;
     var Senha = req.body.senha;
     var Dispositivo = req.body.dispositivo;
-    var Push = req.body.push;
+    var Lingua = req.body.lingua;
     if (Telefone == "") {
         res.json({ erro: "semtelefone" });
         return;
@@ -356,7 +356,7 @@ function loginTelefone(req, res) {
                    return;
                 } 
                 //Gera o token
-                gerarToken(rows[0].Id, Dispositivo, Push, function(err, token) {
+                gerarToken(rows[0].Id, Dispositivo, Lingua, function(err, token) {
                     if (err) 
                         res.json({ erro: "erroaogerartoken" } )
                     else

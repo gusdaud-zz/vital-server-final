@@ -1,18 +1,20 @@
 /* Variáveis compartilhadas */
-var db;
+var db, apn;
 /* Módulos usados */
 var email = require('./email');
 var config = require("../configuracoes");
 var traducao = require("../traducao");
 var request = require('request');
-var multer  = require('multer')
-var fs  = require('fs')
-var upload = multer({ dest: 'uploads/' })
+var multer  = require('multer');
+var fs  = require('fs');
+var util = require('util');
+var upload = multer({ dest: 'uploads/' });
 
 /* Inicia os serviços de autenticação */
-exports.iniciar = function(app, _db, express) {
-    //Salva a variável
+exports.iniciar = function(app, _db, express, _apn) {
+    //Salva as variáveis
     db = _db;
+    apn = _apn;
     //Registra os serviços
     app.post('/servicos/usuario/dados', dadosUsuario);
     app.get('/servicos/usuario/retornarfoto', retornarFoto);
@@ -46,6 +48,8 @@ function dadosUsuario(req, res) {
 
 /* Retorna as notificações */
 function retornarNotificacoes(req, res) {
+    //Salva o código push
+    var push = req.body.push;
     //Executa a query
     db.query("SELECT A.Id as id, B.Nome as nome, A.IdProprietario as IdProprietario " +
         "FROM associacao AS A LEFT JOIN usuario " +
@@ -55,7 +59,9 @@ function retornarNotificacoes(req, res) {
         if (err) 
             res.json({erro: "erronotificacoes", detalhes: err})
         else {
-            //Funcionou, monta a matriz com as notificações e retorna
+            //Funcionou, salva o código push
+            db.query("UPDATE usuario set Push = ? WHERE Id = ?", [push, req.usuario]);
+            //monta a matriz com as notificações e retorna
             var notificacoes = [];
             for (var i in rows) { notificacoes.push( { Tipo: "associacao", Dados: { Id: rows[i].id,
                 Nome: rows[i].nome, IdProprietario: rows[i].IdProprietario } }); }
@@ -168,7 +174,20 @@ function reenviarConvitePush(req, res) {
 }
 
 /* Envia convite via push para usuários existentes */
-function enviarConvitePush(id) {
+function enviarConvitePush(lingua, id) {
+    //Executa a query
+    db.query("SELECT B.Push as token, C.Nome as nome FROM associacao AS A LEFT JOIN usuario AS B " +
+        "ON A.IdAssociado = B.Id LEFT JOIN usuario AS C ON A.IdProprietario = C.Id " +
+        "WHERE B.IdAssociado = ?", [id], 
+        function(err, rows, fields) {
+            //Se tudo ocorrer bem
+            if (!err && rows.length > 0) {
+                var nota = new apn.Notification();
+                nota.expiry = Math.floor(Date.now() / 1000) + 3600; 
+                nota.alert = util.format(traducao(lingua, "convite"), rows[0].Nome);
+                apn.pushNotification(nota, rows[0].token);
+            }   
+       })
 }
 
 /* Envia um convite */
@@ -196,7 +215,7 @@ function enviarConvite(req, res) {
                     var idassociado = (rows.length == 0) ? null : rows[0].Id;
                     var id = result.insertId;
                     //Envia o convite push
-                    enviarConvitePush(id);
+                    enviarConvitePush(req.lingua, id);
                     //Tudo funcionou bem, retorna
                     res.json({ok: true, dados: {Nome: nome, IdAssociado: idassociado, Aprovado: false, 
                         Chave: dados.chave, Id: id }, existe: rows.length > 0})          
