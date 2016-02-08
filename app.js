@@ -55,7 +55,7 @@ function iniciarApn() {
                 notificacao[atributo] = nota[atributo];
             }
             apnProducao.pushNotification(notificacao, dispositivo);
-            apnDesenvolvimento.pushDesenvolvimento(notificacao, dispositivo);
+            apnDesenvolvimento.pushNotification(notificacao, dispositivo);
         }
     }
 }
