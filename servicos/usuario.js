@@ -181,12 +181,9 @@ function enviarConvitePush(lingua, id) {
         "WHERE A.Id = ?", [id], 
         function(err, rows, fields) {
             //Se tudo ocorrer bem
-            if (!err && rows.length > 0) {
-                console.log(util.format(traducao(lingua, "convite"), rows[0].nome) + " para push " +
-                    rows[0].token)
+            if (!err && rows.length > 0)
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
                     alert: util.format(traducao(lingua, "convite"), rows[0].nome)}, rows[0].token);
-            }  
        })
 }
 
