@@ -169,6 +169,8 @@ function desassociar(req, res) {
 /* Reenvia convite via push para usuários existentes */
 function reenviarConvitePush(req, res) {
     var id = req.body.id;
+    db.query("UPDATE associacao SET DataConvite=NOW() WHERE Id=? AND IdProprietario=?", 
+        [id, req.usuario]);
     enviarConvitePush(req.lingua, id);
     res.json({ok: true})
 }
