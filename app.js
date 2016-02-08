@@ -49,8 +49,12 @@ function iniciarApn() {
     return {
         pushNotification: function(token, nota) {
             var dispositivo = new apn.Device(token);
-            apnProducao.pushNotification(nota, dispositivo);
-            apnDesenvolvimento.pushDesenvolvimento(nota, dispositivo);
+            var notificacao = new apn.Notification();
+            for(var atributo in nota) {
+                notificacao[atributo] = nota[atributo];
+            }
+            apnProducao.pushNotification(notificacao, dispositivo);
+            apnDesenvolvimento.pushDesenvolvimento(notificacao, dispositivo);
         }
     }
 }
