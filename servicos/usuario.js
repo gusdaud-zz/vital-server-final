@@ -177,6 +177,7 @@ function reenviarConvitePush(req, res) {
 
 /* Envia uma mensagem via push */
 function enviarPush(mensagem, associado, tipo, id) {
+    console.log("Enviando push");
     //Executa a query
     db.query("SELECT B.Push as tokenassociado, C.Push as tokenproprietario, " +
         " C.Nome as nomeproprietario, B.Nome as nomeassociado" +
