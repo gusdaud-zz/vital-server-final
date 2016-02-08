@@ -188,10 +188,12 @@ function enviarPush(mensagem, associado, tipo, id) {
             mensagem = mensagem.replaceAll("@NOMEPROPRIETARIO@", rows[0].nomeproprietario);
             mensagem = mensagem.replaceAll("@NOMEASSOCIADO@", rows[0].nomeassociado);
             //Se tudo ocorrer bem
-            if (!err && rows.length > 0 && rows[0].token != null)
+            if (!err && rows.length > 0 && rows[0].token != null) {
+                var enviarid = associado ? rows[0].tokenassociado : rows[0].tokenproprietario;
+                console.log("Enviando push '" + mensagem + "' para id " + enviarid);
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
-                    alert: mensagem, payload: { 'tipo': tipo, id: id }}, 
-                    associado ? rows[0].tokenassociado : rows[0].tokenproprietario );
+                    alert: mensagem, payload: { 'tipo': tipo, id: id }}, enviarid);
+            }
        })
 }
 
@@ -233,7 +235,6 @@ function enviarConvite(req, res) {
 
 /* Responde a um convite */
 function responderConvite(req, res) {
-    console.log("responder convite");
     //Obtém os parâmetros
     var id = req.body.id;
     var aprovado = req.body.aprovado;
@@ -248,7 +249,6 @@ function responderConvite(req, res) {
         if (err || (result.affectedRows == 0)) 
             res.json({erro: "erroaoassociar", detalhes: err})
         else {
-            console.log("Enviando push '" + traducao(req.lingua, "aceitouconvite") + "' para id " + id);
             enviarPush(traducao(req.lingua, "aceitouconvite"), false, 'aceitouconvite', id);
             res.json({ok: true});
         }
