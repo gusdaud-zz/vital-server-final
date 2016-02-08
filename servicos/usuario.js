@@ -247,6 +247,7 @@ function responderConvite(req, res) {
         if (err || (result.affectedRows == 0)) 
             res.json({erro: "erroaoassociar", detalhes: err})
         else {
+            console.log("Enviando push '" + traducao(req.lingua, "aceitouconvite") + "' para id " + id);
             enviarPush(traducao(req.lingua, "aceitouconvite"), false, 'aceitouconvite', id);
             res.json({ok: true});
         }
