@@ -171,7 +171,7 @@ function reenviarConvitePush(req, res) {
     var id = req.body.id;
     db.query("UPDATE associacao SET DataConvite=NOW() WHERE Id=? AND IdProprietario=? AND Reprovado=0", 
         [id, req.usuario]);
-    enviarPush(traducao(req.lingua, "convite"), true 'pedidoassociacao', id);
+    enviarPush(traducao(req.lingua, "convite"), true, 'pedidoassociacao', id);
     res.json({ok: true})
 }
 
