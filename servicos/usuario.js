@@ -171,14 +171,15 @@ function reenviarConvitePush(req, res) {
     var id = req.body.id;
     db.query("UPDATE associacao SET DataConvite=NOW() WHERE Id=? AND IdProprietario=? AND Reprovado=0", 
         [id, req.usuario]);
-    enviarPush(traducao(req.lingua, "convite"), 'pedidoassociacao', id);
+    enviarPush(traducao(req.lingua, "convite"), true 'pedidoassociacao', id);
     res.json({ok: true})
 }
 
 /* Envia uma mensagem via push */
-function enviarPush(mensagem, tipo, id) {
+function enviarPush(mensagem, associado, tipo, id) {
     //Executa a query
-    db.query("SELECT B.Push as token, C.Nome as nomeproprietario, B.Nome as nomeassociado" +
+    db.query("SELECT B.Push as tokenassociado, C.Push as tokenproprietario," +
+        " C.Nome as nomeproprietario, B.Nome as nomeassociado" +
         " FROM associacao AS A LEFT JOIN usuario AS B " +
         "ON A.IdAssociado = B.Id LEFT JOIN usuario AS C ON A.IdProprietario = C.Id " +
         "WHERE A.Id = ? AND A.Reprovado=0", [id], 
@@ -189,7 +190,8 @@ function enviarPush(mensagem, tipo, id) {
             //Se tudo ocorrer bem
             if (!err && rows.length > 0 && rows[0].token != null)
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
-                    alert: mensagem, payload: { 'tipo': tipo, id: id }}, rows[0].token);
+                    alert: mensagem, payload: { 'tipo': tipo, id: id }}, 
+                    associado ? rows[0].tokenassociado : rows[0].tokenproprietario );
        })
 }
 
@@ -218,7 +220,7 @@ function enviarConvite(req, res) {
                     var idassociado = (rows.length == 0) ? null : rows[0].Id;
                     var id = result.insertId;
                     //Envia o convite push
-                    enviarPush(traducao(req.lingua, "convite"), 'pedidoassociacao', id);
+                    enviarPush(traducao(req.lingua, "convite"), true, 'pedidoassociacao', id);
                     //Tudo funcionou bem, retorna
                     res.json({ok: true, dados: {Nome: nome, IdAssociado: idassociado, Aprovado: false, 
                         Chave: dados.chave, Id: id }, existe: rows.length > 0})          
@@ -245,7 +247,7 @@ function responderConvite(req, res) {
         if (err || (result.affectedRows == 0)) 
             res.json({erro: "erroaoassociar", detalhes: err})
         else {
-            enviarPush(traducao(req.lingua, "aceitouconvite"), 'aceitouconvite', id);
+            enviarPush(traducao(req.lingua, "aceitouconvite"), false, 'aceitouconvite', id);
             res.json({ok: true});
         }
     });
