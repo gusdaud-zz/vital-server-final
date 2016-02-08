@@ -189,7 +189,8 @@ function enviarConvitePush(lingua, id) {
                 nota.expiry = Math.floor(Date.now() / 1000) + 3600; 
                 nota.alert = util.format(traducao(lingua, "convite"), rows[0].Nome);
                 apn.pushNotification(nota, rows[0].token);
-            }   
+            }  else 
+                console.log(err)
        })
 }
 
