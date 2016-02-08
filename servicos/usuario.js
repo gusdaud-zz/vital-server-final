@@ -185,10 +185,8 @@ function enviarConvitePush(lingua, id) {
             if (!err && rows.length > 0) {
                 console.log(util.format(traducao(lingua, "convite"), rows[0].Nome) + " para push " +
                     rows[0].token)
-                var nota = new apn.Notification();
-                nota.expiry = Math.floor(Date.now() / 1000) + 3600; 
-                nota.alert = util.format(traducao(lingua, "convite"), rows[0].Nome);
-                apn.pushNotification(nota, rows[0].token);
+                apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
+                    alert: util.format(traducao(lingua, "convite"), rows[0].Nome)}, rows[0].token);
             }  else 
                 console.log(id)
        })
