@@ -55,8 +55,6 @@ function iniciarApn() {
             for(var atributo in nota) {
                 notificacao[atributo] = nota[atributo];
             }
-            console.log(notificacao);
-            console.log(token);
             apnProducao.pushNotification(notificacao, dispositivo);
             apnDesenvolvimento.pushNotification(notificacao, dispositivo);
         }
