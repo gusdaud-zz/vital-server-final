@@ -171,22 +171,23 @@ function reenviarConvitePush(req, res) {
     var id = req.body.id;
     db.query("UPDATE associacao SET DataConvite=NOW() WHERE Id=? AND IdProprietario=? AND Reprovado=0", 
         [id, req.usuario]);
-    enviarConvitePush(req.lingua, id);
+    enviarPush(traducao(req.lingua, "convite"), 'pedidoassociacao', id);
     res.json({ok: true})
 }
 
-/* Envia convite via push para usuários existentes */
-function enviarConvitePush(lingua, id) {
+/* Envia uma mensagem via push */
+function enviarPush(mensagem, tipo, id) {
     //Executa a query
     db.query("SELECT B.Push as token, C.Nome as nome FROM associacao AS A LEFT JOIN usuario AS B " +
         "ON A.IdAssociado = B.Id LEFT JOIN usuario AS C ON A.IdProprietario = C.Id " +
         "WHERE A.Id = ? AND A.Reprovado=0", [id], 
         function(err, rows, fields) {
+            //Prepara a mensagem
+            mensagem = mensagem.replaceAll("@NOME@", rows[0].nome);
             //Se tudo ocorrer bem
             if (!err && rows.length > 0 && rows[0].token != null)
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
-                    alert: util.format(traducao(lingua, "convite"), rows[0].nome),
-                    payload: { 'tipo': 'pedidoassociacao' }}, rows[0].token);
+                    alert: mensagem, payload: { 'tipo': tipo, id: id }}, rows[0].token);
        })
 }
 
@@ -215,7 +216,7 @@ function enviarConvite(req, res) {
                     var idassociado = (rows.length == 0) ? null : rows[0].Id;
                     var id = result.insertId;
                     //Envia o convite push
-                    enviarConvitePush(req.lingua, id);
+                    enviarPush(traducao(req.lingua, "convite"), 'pedidoassociacao', id);
                     //Tudo funcionou bem, retorna
                     res.json({ok: true, dados: {Nome: nome, IdAssociado: idassociado, Aprovado: false, 
                         Chave: dados.chave, Id: id }, existe: rows.length > 0})          
