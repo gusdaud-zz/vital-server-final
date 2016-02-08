@@ -177,7 +177,6 @@ function reenviarConvitePush(req, res) {
 
 /* Envia uma mensagem via push */
 function enviarPush(mensagem, associado, tipo, id) {
-    console.log("Enviando push");
     //Executa a query
     db.query("SELECT B.Push as tokenassociado, C.Push as tokenproprietario, " +
         " C.Nome as nomeproprietario, B.Nome as nomeassociado" +
@@ -191,7 +190,6 @@ function enviarPush(mensagem, associado, tipo, id) {
             //Se tudo ocorrer bem
             if (!err && rows.length > 0) {
                 var enviarid = associado ? rows[0].tokenassociado : rows[0].tokenproprietario;
-                console.log("Enviando push '" + mensagem + "' para id " + enviarid);
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
                     alert: mensagem, payload: { 'tipo': tipo, id: id }}, enviarid);
             } 
