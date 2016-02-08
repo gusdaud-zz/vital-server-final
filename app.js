@@ -41,7 +41,7 @@ function iniciarApn() {
     var opcoes = { cert: "certificados/apn-cert-producao.pem", 
         key: "certificados/apn-key-producao.pem", production: true };
     var apnProducao = new apn.Connection(opcoes); 
-    //Inicializa o objeto para o envio de push de desenvolvimento
+    //Inicializa o objeto para o envio de push de modo de desenvolvimento
     opcoes.cert = "certificados/apn-cert-desenvolvimento.pem";
     opcoes.key = "certificados/apn-key-desenvolvimento.pem";
     opcoes.production = false;
