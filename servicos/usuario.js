@@ -178,12 +178,14 @@ function reenviarConvitePush(req, res) {
 /* Envia uma mensagem via push */
 function enviarPush(mensagem, tipo, id) {
     //Executa a query
-    db.query("SELECT B.Push as token, C.Nome as nome FROM associacao AS A LEFT JOIN usuario AS B " +
+    db.query("SELECT B.Push as token, C.Nome as nomeproprietario, B.Nome as nomeassociado" +
+        " FROM associacao AS A LEFT JOIN usuario AS B " +
         "ON A.IdAssociado = B.Id LEFT JOIN usuario AS C ON A.IdProprietario = C.Id " +
         "WHERE A.Id = ? AND A.Reprovado=0", [id], 
         function(err, rows, fields) {
             //Prepara a mensagem
-            mensagem = mensagem.replaceAll("@NOME@", rows[0].nome);
+            mensagem = mensagem.replaceAll("@NOMEPROPRIETARIO@", rows[0].nomeproprietario);
+            mensagem = mensagem.replaceAll("@NOMEASSOCIADO@", rows[0].nomeassociado);
             //Se tudo ocorrer bem
             if (!err && rows.length > 0 && rows[0].token != null)
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
@@ -242,8 +244,10 @@ function responderConvite(req, res) {
         " = 1 WHERE IdAssociado = ? AND Id = ?" , [req.usuario, id], function(err, result) {
         if (err || (result.affectedRows == 0)) 
             res.json({erro: "erroaoassociar", detalhes: err})
-        else
+        else {
+            enviarPush(traducao(req.lingua, "aceitouconvite"), 'aceitouconvite', id);
             res.json({ok: true});
+        }
     });
     
 }

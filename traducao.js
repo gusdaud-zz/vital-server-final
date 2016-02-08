@@ -7,7 +7,8 @@ var linguas = {
             "Please check if the confirmation hasn't being confirmed or expired.",
         emailconfirmacaosucessohtml: "confirmaremailsucesso-en.html",
         smsconfirmacao: "Vital confirmation code: ",
-        convite: "The user @NOME@ has request your permission to monitor you on Vital" 
+        convite: "The user @NOMEPROPRIETARIO@ has request your permission to monitor you on Vital",
+        aceitouconvite: "The user @NOMEASSOCIADO@ has accepted you in his Vital network"
     },
     "pt-br": {
         emailconfirmacaoassunto: "Finalizar cadastro no vital",
@@ -16,7 +17,8 @@ var linguas = {
             "Por favor verifique se a confirmação não foi confirmada ou expirou.",
         emailconfirmacaosucessohtml: "confirmaremailsucesso.html",
         smsconfirmacao: "Código de confirmação do Vital: ",
-        convite: "O usuário @NOME@ pediu sua permissão para lhe monitorar no Vital" 
+        convite: "O usuário @NOMEPROPRIETARIO@ pediu sua permissão para lhe monitorar no Vital",
+        aceitouconvite: "O usuário @NOMEASSOCIADO@ lhe aceitou em sua rede do Vital"
     }
 };
 
