@@ -169,7 +169,7 @@ function desassociar(req, res) {
 /* Reenvia convite via push para usuários existentes */
 function reenviarConvitePush(req, res) {
     var id = req.body.id;
-    enviarConvitePush(id);
+    enviarConvitePush(req.lingua, id);
     res.json({ok: true})
 }
 
