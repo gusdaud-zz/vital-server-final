@@ -233,6 +233,7 @@ function enviarConvite(req, res) {
 
 /* Responde a um convite */
 function responderConvite(req, res) {
+    console.log("responder convite");
     //Obtém os parâmetros
     var id = req.body.id;
     var aprovado = req.body.aprovado;
