@@ -194,8 +194,9 @@ function enviarPush(mensagem, associado, tipo, id) {
                 console.log("Enviando push '" + mensagem + "' para id " + enviarid);
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
                     alert: mensagem, payload: { 'tipo': tipo, id: id }}, enviarid);
-            } else if (err) {
-                console.log(err)
+            } else  {
+                console.log(err);
+                console.log(rows.length);
             }
        })
 }
