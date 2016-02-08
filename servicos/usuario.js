@@ -190,7 +190,7 @@ function enviarConvitePush(lingua, id) {
                 nota.alert = util.format(traducao(lingua, "convite"), rows[0].Nome);
                 apn.pushNotification(nota, rows[0].token);
             }  else 
-                console.log(err)
+                console.log(id)
        })
 }
 
