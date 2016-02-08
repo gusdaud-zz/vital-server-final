@@ -46,6 +46,15 @@ function iniciarApn() {
     opcoes.key = "certificados/apn-key-desenvolvimento.pem";
     opcoes.production = false;
     var apnDesenvolvimento = new apn.Connection(opcoes); 
+    
+    //Debug do apn
+    var feedback = new apn.Feedback({"batchFeedback": true, "interval": 300 });
+    feedback.on("feedback", function(devices) {
+        devices.forEach(function(item) {
+            console.log(item)
+        });
+    });
+
     //Retorno o objeto
     return {
         pushNotification: function(nota, token) {
