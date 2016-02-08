@@ -50,6 +50,7 @@ function iniciarApn() {
     //Retorno o objeto
     return {
         pushNotification: function(nota, token) {
+            if (token == null) return;
             var dispositivo = new apn.Device(token);
             var notificacao = new apn.Notification();
             for(var atributo in nota) {

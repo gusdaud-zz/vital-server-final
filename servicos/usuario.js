@@ -189,15 +189,12 @@ function enviarPush(mensagem, associado, tipo, id) {
             mensagem = mensagem.replaceAll("@NOMEPROPRIETARIO@", rows[0].nomeproprietario);
             mensagem = mensagem.replaceAll("@NOMEASSOCIADO@", rows[0].nomeassociado);
             //Se tudo ocorrer bem
-            if (!err && rows.length > 0 && rows[0].token != null) {
+            if (!err && rows.length > 0) {
                 var enviarid = associado ? rows[0].tokenassociado : rows[0].tokenproprietario;
                 console.log("Enviando push '" + mensagem + "' para id " + enviarid);
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
                     alert: mensagem, payload: { 'tipo': tipo, id: id }}, enviarid);
-            } else  {
-                console.log(err);
-                console.log(rows.length);
-            }
+            } 
        })
 }
 
