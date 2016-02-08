@@ -184,7 +184,7 @@ function enviarConvitePush(lingua, id) {
             if (!err && rows.length > 0)
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
                     alert: util.format(traducao(lingua, "convite"), rows[0].nome),
-                    payload: { tipo: 'pedidoassociacao' }}, rows[0].token);
+                    payload: { 'tipo': 'pedidoassociacao' }}, rows[0].token);
        })
 }
 
