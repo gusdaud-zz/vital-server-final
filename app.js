@@ -47,7 +47,8 @@ function iniciarApn() {
     var apnDesenvolvimento = new apn.Connection(opcoes); 
     //Retorno o objeto
     return {
-        pushNotification: function(token, nota) {
+        pushNotification: function(nota, token) {
+            console.log(token);
             var dispositivo = new apn.Device(token);
             var notificacao = new apn.Notification();
             for(var atributo in nota) {
