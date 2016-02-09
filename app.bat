@@ -1,5 +1,5 @@
-echo off
+@echo off
 echo Atualizando codigo
-git pull vital master > NULL
+git pull vital master
 echo Executando NodeJS
-node --debug-brk=46979 app.js 
+node app.js 
