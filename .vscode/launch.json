@@ -24,8 +24,8 @@
 			"name": "Attach",
 			"type": "node",
 			"request": "attach",
-			"port": 5858,
-            "address": "http://gusdaud.dlinkddns.com"
+			"port": 46979,
+            "address": "gusdaud.dlinkddns.com"
 		}
 	]
 }
