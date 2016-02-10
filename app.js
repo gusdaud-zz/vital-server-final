@@ -72,7 +72,6 @@ String.prototype.replaceAll = function (find, replace) {
 /* Inicia o MQTT */
 function iniciarMqtt() {
     //Prepara o banco de dados
-    console.log("iniciando MQTT");
     var db = {
         type: 'mongo',
         url: 'mongodb://localhost:27017/mqtt',
