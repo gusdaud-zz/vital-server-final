@@ -21,8 +21,7 @@ module.exports = function() {
     
     //Intercepta mensagens
     servidor.on("published", function(packet, client) {
-        console.log(packet);
-        //servidor.emit(topic, JSON.parse(payload));
+        servidor.emit(packet.topic, JSON.parse(packet.payload));
     });
     
     //Retorna referência ao servidor
