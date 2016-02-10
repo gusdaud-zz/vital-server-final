@@ -24,6 +24,9 @@ module.exports = function() {
         console.log(packet);
         //servidor.emit(topic, JSON.parse(payload));
     })
+    servidor.on("error", function(obj) {
+        console.log("Erro - " + obj);
+    })
     
     //Retorna referência ao servidor
     return servidor;
