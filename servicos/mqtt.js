@@ -20,9 +20,9 @@ module.exports = function() {
     var servidor = new mosca.Server(params);    
     
     //Intercepta mensagens
-    servidor.on("message", function(topic, payload) {
-        console.log(topic);
-        servidor.emit(topic, JSON.parse(payload));
+    servidor.on("published", function(packet, client) {
+        console.log(packet);
+        //servidor.emit(topic, JSON.parse(payload));
     })
     
     //Retorna referência ao servidor
