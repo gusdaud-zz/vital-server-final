@@ -1,9 +1,10 @@
+
+/* Início */
+module.exports = function() {
 /* Para a conexão com a biblioteca do broket do MQTT */
 var config = require("../configuracoes"),
     mosca = require('mosca');
 
-/* Início */
-module.exports = function() {
     //Aponta o banco de dados
     var db = {
         type: 'mongo',
