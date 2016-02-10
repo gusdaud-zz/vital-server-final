@@ -345,14 +345,6 @@ function loginMqtt() {
                 callback(null, autorizado);
             });
    }
-   //Permissão para publicar
-   mqtt.authorizePublish = function(client, topic, payload, callback) {
-        callback(null, client.usuario == topic.split('/')[1]);
-   }
-   //Permissão para inscrição
-   mqtt.authorizeSubscribe = function(client, topic, callback) {
-        callback(null, client.usuario == topic.split('/')[1]);
-   }
 }
     
 /* Serviço para login com telefone, retorna token */
