@@ -106,7 +106,7 @@ function limparRegistrosSemConfirmacao() {
 
 /* Retorna os dados do usuário */
 function retornarUsuario(id, token, req, res) {
-    db.query('SELECT Telefone, Nome, Sobrenome, Email, Publico FROM Sessao LEFT JOIN Usuario' +
+    db.query('SELECT Id, Telefone, Nome, Sobrenome, Email, Publico FROM Sessao LEFT JOIN Usuario' +
         ' ON Sessao.Usuario = Usuario.Id  WHERE Sessao.Id=?', [token], 
         function(err, rows, fields) {
             if (!err) { 
@@ -130,7 +130,7 @@ function retornarUsuario(id, token, req, res) {
                             //Retorna os dados 
                             res.json({ok: true, token: token, 
                                 usuario: {Telefone: rows[0].Telefone, Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, 
-                                    Email: rows[0].Email, associacoes: associacoes}, 
+                                    Email: rows[0].Email, Id: rows[0].Id, associacoes: associacoes}, 
                                     publico: JSON.parse(rows[0].Publico)})
                         }
                         
