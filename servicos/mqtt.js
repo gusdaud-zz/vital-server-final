@@ -21,6 +21,7 @@ module.exports = function() {
     
     //Intercepta mensagens
     servidor.on("message", function(topic, payload) {
+        console.log(topic);
         servidor.emit(topic, JSON.parse(payload));
     })
     
