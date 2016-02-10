@@ -4,7 +4,7 @@ var mosca = require('mosca'),
     events = require('events');
 
 /* Início */
-exports = function() {
+module.exports = function() {
     //Aponta o banco de dados
     var db = {
         type: 'mongo',
