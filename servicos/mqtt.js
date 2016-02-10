@@ -1,6 +1,7 @@
 /* Para a conexão com a biblioteca do broket do MQTT */
 var config = require("../configuracoes"),
-    mosca = require('mosca');
+    mosca = require('mosca'),
+    events = require('events');
 
 /* Início */
 module.exports = function() {
@@ -18,10 +19,11 @@ module.exports = function() {
     };
     //Inicia o servidor MQTT
     var servidor = new mosca.Server(params);    
+    servidor.eventos = new events.EventEmitter();
     
     //Intercepta mensagens
     servidor.on("published", function(packet, client) {
-        servidor.emit(packet.topic, JSON.parse(packet.payload));
+        servidor.eventos.emit(packet.topic, JSON.parse(packet.payload));
     });
     
     //Retorna referência ao servidor

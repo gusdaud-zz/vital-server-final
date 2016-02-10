@@ -29,7 +29,7 @@ exports.iniciar = function(app, _db, express, _apn, _mqtt) {
     app.post('/servicos/usuario/reenviarconvitepush', reenviarConvitePush);
     app.post('/servicos/usuario/retornarnotificacoes', retornarNotificacoes);
     //Serviços MQTT
-    mqtt.on('usuario/retornarnotificacoes', mqttRetornarNotificacoes)
+    mqtt.eventos.on('usuario/retornarnotificacoes', mqttRetornarNotificacoes)
 }
 
 /* Retorna os dados do usuário */
