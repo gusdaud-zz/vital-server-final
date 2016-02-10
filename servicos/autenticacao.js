@@ -29,7 +29,6 @@ exports.iniciar = function(app, _db, _mqtt) {
     app.get('/servicos/autenticacao/confirmaremail', confirmarEmail);
     app.post('/servicos/autenticacao/confirmartelefone', confirmarTelefone);
     //Do servidor MQTT
-    console.log("iniciando MQTT");
     mqtt.on('ready', loginMqtt);
 
     //Pedidos que requerem o token
