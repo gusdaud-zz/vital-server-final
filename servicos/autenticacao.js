@@ -340,7 +340,7 @@ function loginMqtt() {
         //Executa a query
         db.query('SELECT Id, Senha from Usuario WHERE Telefone=? AND ConfirmarTelefone IS NULL', [Telefone], 
             function(err, rows, fields) {
-                var autorizado = rows[0].Senha == Senha;
+                var autorizado = (rows.length > 0) && (rows[0].Senha == Senha);
                 if (autorizado) client.usuario = rows[0].Id;
                 callback(null, autorizado);
             });
