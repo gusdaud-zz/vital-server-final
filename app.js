@@ -13,7 +13,7 @@ var express = require('express'),
     dispositivo = require('./servicos/dispositivo'),
     bodyParser = require('body-parser'),
     app = express(),
-    mqtt = require('./servicos/mqtt'),
+    mqtt = require('./servicos/mqtt')(),
     apn = require('apn');
 
 /* Inicia o servidor */
@@ -72,7 +72,6 @@ String.prototype.replaceAll = function (find, replace) {
 /* Funções de inicialização */
 var local = os.homedir().toLowerCase().indexOf("gustavo") > 0;
 iniciarServidor(local);
-mqtt = mqtt();
 var apnConn = iniciarApn();
 db.iniciar(app);
 dispositivo.iniciar(app, db, express);
