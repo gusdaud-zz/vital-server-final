@@ -1,7 +1,7 @@
 /* Serviços de autenticação */
 
 /* Variáveis compartilhadas */
-var db;
+var db, mqtt;
 /* Módulos usados */
 var path = require('path');
 var basicAuth = require('basic-auth');
@@ -19,14 +19,18 @@ var twilio = require('twilio')(config.twilio.sid, config.twilio.token);
 }*/
 
 /* Inicia os serviços de autenticação */
-exports.iniciar = function(app, _db, express) {
+exports.iniciar = function(app, _db, _mqtt) {
     //Salva a variável
     db = _db;
+    mqtt = _mqtt;
     //Registra os serviços
     app.post('/servicos/autenticacao/telefone', loginTelefone);
     app.post('/servicos/autenticacao/criarusuario', criarNovoUsuario);
     app.get('/servicos/autenticacao/confirmaremail', confirmarEmail);
     app.post('/servicos/autenticacao/confirmartelefone', confirmarTelefone);
+    //Do servidor MQTT
+    mqtt.on('ready', loginMqtt);
+
     //Pedidos que requerem o token
     app.use(requerToken);
     app.get('/servicos/autenticacao/logout', logout);
@@ -328,6 +332,29 @@ function gerarToken(usuario, dispositivo, lingua, callback) {
     db.query("UPDATE Usuario SET Acesso=NOW(), Dispositivo=? WHERE Id=?", [dispositivo, usuario]);
 }
 
+/* Validação do login por Mqtt */
+function loginMqtt() { 
+   console.log("Servidor MQTT iniciado na porta 1883");
+   //Função para autenticar
+   mqtt.authenticate = function(client, Telefone, Senha, callback) {
+        //Executa a query
+        db.query('SELECT Id, Senha from Usuario WHERE Telefone=? AND ConfirmarTelefone IS NULL', [Telefone], 
+            function(err, rows, fields) {
+                var autorizado = rows[0].Senha == Senha;
+                if (autorizado) client.usuario = rows[0].Id;
+                callback(null, autorizado);
+            });
+   }
+   //Permissão para publicar
+   mqtt.authorizePublish = function(client, topic, payload, callback) {
+        callback(null, client.usuario == topic.split('/')[1]);
+   }
+   //Permissão para inscrição
+   mqtt.authorizeSubscribe = function(client, topic, callback) {
+        callback(null, client.usuario == topic.split('/')[1]);
+   }
+}
+    
 /* Serviço para login com telefone, retorna token */
 function loginTelefone(req, res) {
     //Salva telefone e senha

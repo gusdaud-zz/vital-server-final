@@ -18,7 +18,8 @@
       "nodemailer-smtp-transport": "^1.1.0",
       "twilio": "^2.8.0",
       "multer": "^1.1.0",
-      "apn": "^1.7.5" 
+      "apn": "^1.7.5",
+      "mosca": "^1.0.2"
   },
   "engines": {
 	"node": "0.12.x"
