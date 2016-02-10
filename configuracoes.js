@@ -21,6 +21,10 @@ module.exports = {
         usuario: "postmaster@kvital.com",
         senha: "job@novo"
     },
+    mqtt: {
+        url: "mongodb://localhost:27017/mqtt",
+        porta: 1883  
+    },
     twilio: {
         sid: "AC25e6ae4a16489796572b360b6b4686e9",
         token: "6129b0d97449596caceeb1a253fd569d",

@@ -13,7 +13,7 @@ var express = require('express'),
     dispositivo = require('./servicos/dispositivo'),
     bodyParser = require('body-parser'),
     app = express(),
-    mosca = require('mosca'),
+    mqtt = require('mqtt')(),
     apn = require('apn');
 
 /* Inicia o servidor */
@@ -69,30 +69,10 @@ String.prototype.replaceAll = function (find, replace) {
     return str.replace(new RegExp(find, 'g'), replace);
 };
 
-/* Inicia o MQTT */
-function iniciarMqtt() {
-    //Prepara o banco de dados
-    var db = {
-        type: 'mongo',
-        url: 'mongodb://localhost:27017/mqtt',
-        pubsubCollection: 'ascoltatori',
-        mongo: {}
-    };
-    //Parâmetros de configuração
-    var config = {
-        port: 1883,
-        backend: db
-    };
-    //Inicia o servidor MQTT
-    var servidor = new mosca.Server(config);    
-    return servidor;
-}
-
 /* Funções de inicialização */
 var local = os.homedir().toLowerCase().indexOf("gustavo") > 0;
 iniciarServidor(local);
 var apnConn = iniciarApn();
-var mqtt = iniciarMqtt();
 db.iniciar(app);
 dispositivo.iniciar(app, db, express);
 autenticacao.iniciar(app, db, mqtt);

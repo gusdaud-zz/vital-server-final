@@ -1,5 +1,5 @@
 /* Variáveis compartilhadas */
-var db, apn;
+var db, apn, mqtt;
 /* Módulos usados */
 var email = require('./email');
 var config = require("../configuracoes");
@@ -11,10 +11,11 @@ var util = require('util');
 var upload = multer({ dest: 'uploads/' });
 
 /* Inicia os serviços de autenticação */
-exports.iniciar = function(app, _db, express, _apn) {
+exports.iniciar = function(app, _db, express, _apn, _mqtt) {
     //Salva as variáveis
     db = _db;
     apn = _apn;
+    mqtt = _mqtt;
     //Registra os serviços
     app.post('/servicos/usuario/dados', dadosUsuario);
     app.get('/servicos/usuario/retornarfoto', retornarFoto);
@@ -27,6 +28,8 @@ exports.iniciar = function(app, _db, express, _apn) {
     app.post('/servicos/usuario/desassociar', desassociar);
     app.post('/servicos/usuario/reenviarconvitepush', reenviarConvitePush);
     app.post('/servicos/usuario/retornarnotificacoes', retornarNotificacoes);
+    //Serviços MQTT
+    mqtt.on('usuario/retornarnotificacoes', mqttRetornarNotificacoes)
 }
 
 /* Retorna os dados do usuário */
@@ -44,6 +47,11 @@ function dadosUsuario(req, res) {
                 usuario: {Nome: rows[0].Nome, Email: rows[0].Email},
                 publico: JSON.parse(rows[0].Publico)});
     });
+}
+
+/* Retorna as notificações - MQTT */
+function mqttRetornarNotificacoes(dados) {
+    console.log("MQTT - Retornar notificações (" + dados + ")")
 }
 
 /* Retorna as notificações */
