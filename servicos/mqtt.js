@@ -1,7 +1,6 @@
 /* Para a conexão com a biblioteca do broket do MQTT */
-var mosca = require('mosca'),
-    config = require("../configuracoes"),
-    events = require('events');
+var config = require("../configuracoes"),
+    mosca = require('mosca');
 
 /* Início */
 module.exports = function() {
