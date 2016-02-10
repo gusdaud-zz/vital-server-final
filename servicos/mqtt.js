@@ -1,10 +1,9 @@
-
-/* Início */
-module.exports = function() {
 /* Para a conexão com a biblioteca do broket do MQTT */
 var config = require("../configuracoes"),
     mosca = require('mosca');
 
+/* Início */
+module.exports = function() {
     //Aponta o banco de dados
     var db = {
         type: 'mongo',
@@ -13,12 +12,12 @@ var config = require("../configuracoes"),
         mongo: {}
     };
     //Parâmetros de configuração
-    var config = {
+    var params = {
         port: config.mqtt.porta,
         backend: db
     };
     //Inicia o servidor MQTT
-    var servidor = new mosca.Server(config);    
+    var servidor = new mosca.Server(params);    
     
     //Intercepta mensagens
     servidor.on("message", function(topic, payload) {
