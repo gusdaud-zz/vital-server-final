@@ -23,7 +23,7 @@ module.exports = function() {
     
     //Intercepta mensagens
     servidor.on("published", function(packet, client) {
-        servidor.eventos.emit(packet.topic, JSON.parse(packet.payload));
+        servidor.eventos.emit(packet.topic, null);
     });
     
     //Retorna referência ao servidor
