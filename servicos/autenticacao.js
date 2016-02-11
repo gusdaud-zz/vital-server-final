@@ -108,12 +108,12 @@ function retornarUsuario(id, token, req, res) {
         function(err, rows, fields) {
             if (!err) { 
                 if (rows.length > 0)
-                    //Se tudo funcionar bem, procura pelos usuários associados
+                    //Se tudo funcionar bem, procura por todos os usuários associados
                     db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome, ' + 
                         'associacao.IdAssociado as idassociado, (associacao.Aprovado = 1) as aprovado, ' +
-                        'associacao.Id as id, ' + 
-                        'IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave  FROM associacao ' + 
-                        'LEFT JOIN usuario ON associacao.idAssociado = usuario.ID WHERE IdProprietario=?', 
+                        'associacao.Id as id, IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave ' +
+                        'FROM associacao LEFT JOIN usuario ON associacao.idAssociado = usuario.ID ' +
+                        'WHERE IdProprietario=?', 
                         [id], function(err, rows2, fields) { 
                         if (err)
                             res.json({ erro: "errodb", detalhes: err });
