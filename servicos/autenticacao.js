@@ -134,7 +134,7 @@ function retornarUsuario(id, token, req, res) {
                 else
                     res.json({ erro: "errodb" })
             } else 
-                res.json({ erro: "errodb" })
+                res.json({ erro: "errodb", detalhes: err })
         } );
 }
 
