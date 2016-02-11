@@ -103,7 +103,7 @@ function limparRegistrosSemConfirmacao() {
 
 /* Retorna os dados do usuário */
 function retornarUsuario(id, token, req, res) {
-    db.query('SELECT Id, Telefone, Nome, Sobrenome, Email, Publico FROM Sessao LEFT JOIN Usuario' +
+    db.query('SELECT Usuario.Id as Id, Telefone, Nome, Sobrenome, Email, Publico FROM Sessao LEFT JOIN Usuario' +
         ' ON Sessao.Usuario = Usuario.Id  WHERE Sessao.Id=?', [token], 
         function(err, rows, fields) {
             if (!err) { 
