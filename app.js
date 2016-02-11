@@ -13,7 +13,6 @@ var express = require('express'),
     dispositivo = require('./servicos/dispositivo'),
     bodyParser = require('body-parser'),
     app = express(),
-    mqtt = require('./servicos/mqtt')(),
     apn = require('apn');
 
 /* Inicia o servidor */
@@ -75,5 +74,5 @@ iniciarServidor(local);
 var apnConn = iniciarApn();
 db.iniciar(app);
 dispositivo.iniciar(app, db, express);
-autenticacao.iniciar(app, db, mqtt);
-usuario.iniciar(app, db, express, apnConn, mqtt);
+autenticacao.iniciar(app, db);
+usuario.iniciar(app, db, express, apnConn);

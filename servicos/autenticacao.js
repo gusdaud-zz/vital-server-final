@@ -1,7 +1,7 @@
 /* Serviços de autenticação */
 
 /* Variáveis compartilhadas */
-var db, mqtt;
+var db;
 /* Módulos usados */
 var path = require('path');
 var basicAuth = require('basic-auth');
@@ -19,17 +19,14 @@ var twilio = require('twilio')(config.twilio.sid, config.twilio.token);
 }*/
 
 /* Inicia os serviços de autenticação */
-exports.iniciar = function(app, _db, _mqtt) {
+exports.iniciar = function(app, _db) {
     //Salva a variável
     db = _db;
-    mqtt = _mqtt;
     //Registra os serviços
     app.post('/servicos/autenticacao/telefone', loginTelefone);
     app.post('/servicos/autenticacao/criarusuario', criarNovoUsuario);
     app.get('/servicos/autenticacao/confirmaremail', confirmarEmail);
     app.post('/servicos/autenticacao/confirmartelefone', confirmarTelefone);
-    //Do servidor MQTT
-    mqtt.on('ready', loginMqtt);
 
     //Pedidos que requerem o token
     app.use(requerToken);
@@ -330,21 +327,6 @@ function gerarToken(usuario, dispositivo, lingua, callback) {
     });
     //Atualiza com a data e horário do último acesso
     db.query("UPDATE Usuario SET Acesso=NOW(), Dispositivo=? WHERE Id=?", [dispositivo, usuario]);
-}
-
-/* Validação do login por Mqtt */
-function loginMqtt() { 
-   console.log("Servidor MQTT iniciado na porta 1883");
-   //Função para autenticar
-   mqtt.authenticate = function(client, Telefone, Senha, callback) {
-        //Executa a query
-        db.query('SELECT Id, Senha from Usuario WHERE Telefone=? AND ConfirmarTelefone IS NULL', [Telefone], 
-            function(err, rows, fields) {
-                var autorizado = (rows.length > 0) && (rows[0].Senha == Senha);
-                if (autorizado) client.usuario = rows[0].Id;
-                callback(null, autorizado);
-            });
-   }
 }
     
 /* Serviço para login com telefone, retorna token */
