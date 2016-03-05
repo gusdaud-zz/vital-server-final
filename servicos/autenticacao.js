@@ -120,8 +120,10 @@ function retornarUsuario(id, token, req, res) {
                         'Localizacao ON Localizacao.Id = associacao.idAssociado ' + 
                         'WHERE IdProprietario=?', 
                         [id], function(err, rows2, fields) { 
-                        if (err)
+                        if (err) {
+                            console.log(err);
                             res.json({ erro: "errodb", detalhes: err });
+                        }
                         else {
                             //Monta as associacoes e incluí a geolocalização se aplicável
                             var associacoes = [];
