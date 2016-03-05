@@ -32,13 +32,20 @@ function atualizarDispositivo(req, res) {
     if (req.body.latitude) inserir.Latitude = req.body.latitude;
     if (req.body.longitude) inserir.Longitude = req.body.longitude;
     if (req.body.bateria) inserir.Bateria = req.body.bateria;
+    
+    //Prepara as queries
+    var queryInserir = "INSERT INTO Dispositivo SET ?;"
+    var queryPush = "SELECT DISTINCT Push FROM Associacao RIGHT JOIN Sessao ON Associacao.IdProprietario = Sessao.Usuario LEFT JOIN Usuario ON Usuario.ID = Associacao.IdProprietario WHERE IDAssociado = ?;";
+    
     //Chama a query SQL
-    db.query("INSERT INTO Dispositivo SET ?", inserir, 
-        function(err, result) {
+    db.query(queryInserir + queryPush, [inserir, id], 
+        function(err, rows, fields) {
         if (err) 
             res.json({erro: "erroatualizar" })
-        else 
+        else {
             res.json({ok: true});
+            console.log(rows);
+        }
     });
 
 }
