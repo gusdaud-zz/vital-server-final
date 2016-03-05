@@ -69,6 +69,7 @@ String.prototype.replaceAll = function (find, replace) {
 };
 
 /* Funções de inicialização */
+console.log(os.homedir().toLowerCase());
 var local = os.homedir().toLowerCase().indexOf("gustavo") > 0;
 iniciarServidor(local);
 var apnConn = iniciarApn();
