@@ -112,7 +112,7 @@ function retornarUsuario(id, token, req, res) {
                     db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome, ' + 
                         'associacao.IdAssociado as idassociado, (associacao.Aprovado = 1) as aprovado, ' +
                         'associacao.Id as id, IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave, ' +
-                        'Localizacao.Atualizacao as atualizacao, Localizacao.latitude as latitude ' +
+                        'Localizacao.Atualizacao as atualizacao, Localizacao.latitude as latitude, ' +
                         'Localizacao.longitude as longitude ' +
                         'FROM associacao LEFT JOIN usuario ON associacao.idAssociado = usuario.ID ' +
                         'LEFT JOIN (SELECT Id, Atualizacao, Latitude, Longitude FROM dispositivo WHERE ' + 
