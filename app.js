@@ -37,7 +37,7 @@ function iniciarServidor(local) {
 
 /* Inicializa o Apple Notification */
 function iniciarApn() {
-    //Inicializa o objeto para envio de push de produçãp
+    //Inicializa o objeto para envio de push de produção
     var opcoes = { cert: "certificados/apn-cert-producao.pem", 
         key: "certificados/apn-key-producao.pem", production: true };
     var apnProducao = new apn.Connection(opcoes); 

@@ -113,6 +113,9 @@ function retornarUsuario(id, token, req, res) {
                         'associacao.IdAssociado as idassociado, (associacao.Aprovado = 1) as aprovado, ' +
                         'associacao.Id as id, IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave ' +
                         'FROM associacao LEFT JOIN usuario ON associacao.idAssociado = usuario.ID ' +
+                        "LEFT JOIN (SELECT Id, Atualizacao, Latitude, Longitude FROM dispositivo WHERE " + 
+                        "dispositivo.Id = associacao.idAssociado ORDER BY Atualizacao DESC LIMIT 1) " +
+                        "Localizacao ON Localizacao.Id = associacao.idAssociado " + 
                         'WHERE IdProprietario=?', 
                         [id], function(err, rows2, fields) { 
                         if (err)
