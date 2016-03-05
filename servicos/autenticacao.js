@@ -111,21 +111,26 @@ function retornarUsuario(id, token, req, res) {
                     //Se tudo funcionar bem, procura por todos os usuários associados
                     db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome, ' + 
                         'associacao.IdAssociado as idassociado, (associacao.Aprovado = 1) as aprovado, ' +
-                        'associacao.Id as id, IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave ' +
+                        'associacao.Id as id, IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave, ' +
+                        'Localizacao.Atualizacao as atualizacao, Localizacao.latitude as latitude ' +
+                        'Localizacao.longitude as longitude ' +
                         'FROM associacao LEFT JOIN usuario ON associacao.idAssociado = usuario.ID ' +
-                        "LEFT JOIN (SELECT Id, Atualizacao, Latitude, Longitude FROM dispositivo WHERE " + 
-                        "dispositivo.Id = associacao.idAssociado ORDER BY Atualizacao DESC LIMIT 1) " +
-                        "Localizacao ON Localizacao.Id = associacao.idAssociado " + 
+                        'LEFT JOIN (SELECT Id, Atualizacao, Latitude, Longitude FROM dispositivo WHERE ' + 
+                        'dispositivo.Id = associacao.idAssociado ORDER BY Atualizacao DESC LIMIT 1) ' +
+                        'Localizacao ON Localizacao.Id = associacao.idAssociado ' + 
                         'WHERE IdProprietario=?', 
                         [id], function(err, rows2, fields) { 
                         if (err)
                             res.json({ erro: "errodb", detalhes: err });
                         else {
-                            //Monta as associacoes
+                            //Monta as associacoes e incluí a geolocalização se aplicável
                             var associacoes = [];
                             for (var i = 0; i < rows2.length; i++) {
+                                var localizacao = { Atualizacao: rows2[i].atualizacao, 
+                                    Latitude: rows2[i].latitude, Longitude: rows2[i].longitude };
                                 associacoes.push({Nome: rows2[i].nome, IdAssociado: rows2[i].idassociado, 
-                                    Id: rows2[i].id, Aprovado: rows2[i].aprovado, Chave: rows2[i].chave});
+                                    Id: rows2[i].id, Aprovado: rows2[i].aprovado, Chave: rows2[i].chave,
+                                    Localizacao: (rows2[i].aprovado == 1) ? undefined : localizacao });
                             }
                             //Retorna os dados 
                             res.json({ok: true, token: token, 
