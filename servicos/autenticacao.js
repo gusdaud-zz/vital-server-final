@@ -128,6 +128,7 @@ function retornarUsuario(id, token, req, res) {
                             for (var i = 0; i < rows2.length; i++) {
                                 var localizacao = { Atualizacao: rows2[i].atualizacao, 
                                     Latitude: rows2[i].latitude, Longitude: rows2[i].longitude };
+                                    console.log("XXXX");
                                     console.log(localizacao);
                                 associacoes.push({Nome: rows2[i].nome, IdAssociado: rows2[i].idassociado, 
                                     Id: rows2[i].id, Aprovado: rows2[i].aprovado, Chave: rows2[i].chave,
