@@ -36,7 +36,7 @@ function atualizarDispositivo(req, res) {
     
     //Prepara as queries
     var queryInserir = "INSERT INTO Dispositivo SET ?;"
-    var queryPush = "SELECT Push FROM Associacao LEFT JOIN Usuario ON Associacao.IdProprietario = Usuario.Id WHERE Push <> '' AND Associacao.IdAssociado IN  ( SELECT Id FROM Usuario WHERE Dispositivo = ?);";
+    var queryPush = "SELECT Id, Push FROM Associacao LEFT JOIN Usuario ON Associacao.IdProprietario = Usuario.Id WHERE Push <> '' AND Associacao.IdAssociado IN  ( SELECT Id FROM Usuario WHERE Dispositivo = ?);";
     
     //Chama a query SQL
     db.query(queryInserir + queryPush, [inserir, id], 
@@ -52,7 +52,7 @@ function atualizarDispositivo(req, res) {
             if (rows[1].length == 0) return;
             for (var i in rows[1]) {
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
-                    "content-available": 1, payload: { 'tipo': "geolocalizacao", 'id': id,
+                    "content-available": 1, payload: { 'tipo': "geolocalizacao", 'id': rows[i][i].Id,
                     'latitude': req.body.latitude, 'longitude': req.body.longitude }}, rows[1][i].Push);
             }
         }
