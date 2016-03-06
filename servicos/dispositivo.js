@@ -46,8 +46,9 @@ function atualizarDispositivo(req, res) {
         }
         else {
             res.json({ok: true});
+            console.log("Push para:");
             for (var i in rows[1]) {
-                console.log(rows[1][i]);                
+                console.log(rows[1][i].Push);                
             }
         }
     });
