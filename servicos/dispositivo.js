@@ -36,7 +36,7 @@ function atualizarDispositivo(req, res) {
     
     //Prepara as queries
     var queryInserir = "INSERT INTO Dispositivo SET ?;"
-    var queryPush = "SELECT Usuario.Id AS Id, Push FROM Associacao LEFT JOIN Usuario ON Associacao.IdProprietario = Usuario.Id WHERE Push <> '' AND Associacao.IdAssociado IN  ( SELECT Id FROM Usuario WHERE Dispositivo = ?);";
+    var queryPush = "SELECT IdAssociado AS Id, Push FROM Associacao LEFT JOIN Usuario ON Associacao.IdProprietario = Usuario.Id WHERE Push <> '' AND Associacao.IdAssociado IN  ( SELECT Id FROM Usuario WHERE Dispositivo = ?);";
     
     //Chama a query SQL
     db.query(queryInserir + queryPush, [inserir, id], 
