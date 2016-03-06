@@ -49,6 +49,7 @@ function atualizarDispositivo(req, res) {
             //Retorna que a atualização foi feita com sucesso
             res.json({ok: true});
             //Notifica a nova localização aos usuário logados através de silent push
+            console.log(rows[1]);
             if (rows[1].length == 0) return;
             for (var i in rows[1]) {
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
