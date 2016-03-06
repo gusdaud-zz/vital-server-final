@@ -51,9 +51,10 @@ function atualizarDispositivo(req, res) {
             return;
             //Notifica a nova localização aos usuário logados através de silent push
             for (var i in rows[1]) {
-                apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
-                    "content-available": 1, payload: { 'tipo': "geolocalizacao", 'id': id,
-                    'latitude': req.body.latitude, 'longitude': req.body.longitude }}, rows[1][i].Push);
+                var Push = rows[1][i].Push;
+                //apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
+                //    "content-available": 1, payload: { 'tipo': "geolocalizacao", 'id': id,
+                //    'latitude': req.body.latitude, 'longitude': req.body.longitude }}, Push);
             }
         }
     });
