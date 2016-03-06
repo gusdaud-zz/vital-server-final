@@ -51,6 +51,7 @@ function atualizarDispositivo(req, res) {
             //Notifica a nova localização aos usuário logados através de silent push
             if (rows[1].length == 0) return;
             for (var i in rows[1]) {
+                console.log("Push para " + req[1][i].Id + " - atualizou " + rows[1][i].Push);
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
                     "content-available": 1, payload: { 'tipo': "geolocalizacao", 'id': rows[1][i].Id,
                     'latitude': req.body.latitude, 'longitude': req.body.longitude,
