@@ -48,7 +48,6 @@ function atualizarDispositivo(req, res) {
         else {
             //Retorna que a atualização foi feita com sucesso
             res.json({ok: true});
-            return;
             //Notifica a nova localização aos usuário logados através de silent push
             for (var i in rows[1]) {
                 var Push = rows[1][i].Push;
