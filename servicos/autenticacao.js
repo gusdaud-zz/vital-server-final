@@ -110,15 +110,7 @@ function retornarUsuario(id, token, req, res) {
                 if (rows.length > 0)
                     //Se tudo funcionar bem, procura por todos os usuários associados e obtém a geolocalização
                     //e bateria
-                    db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome, ' + 
-                             'associacao.IdAssociado as idassociado, (associacao.Aprovado = 1) as aprovado, ' +
-                             'associacao.Id as id, IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave, ' + 
-                             'dispositivo.Atualizacao as atualizacao, dispositivo.latitude as latitude, ' +
-                             'dispositivo.longitude as longitude, dispositivo.bateria as bateria FROM Associacao ' +
-                             'RIGHT JOIN Usuario ON Associacao.IdAssociado = Usuario.Id ' +  
-                             'LEFT JOIN (SELECT Id, Atualizacao, Latitude, Longitude, Bateria FROM Dispositivo ' + 
-                             'GROUP BY Id ORDER BY Atualizacao DESC) AS Dispositivo ' +
-                             'ON Usuario.Dispositivo = Dispositivo.Id WHERE IdProprietario=1', 
+                    db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome, associacao.IdAssociado as idassociado, (associacao.Aprovado = 1) as aprovado, associacao.Id as id, IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave, dispositivo.Atualizacao as atualizacao, dispositivo.latitude as latitude, dispositivo.longitude as longitude, dispositivo.bateria as bateria FROM Associacao RIGHT JOIN Usuario ON Associacao.IdAssociado = Usuario.Id  LEFT JOIN (SELECT Id, Atualizacao, Latitude, Longitude, Bateria FROM Dispositivo as T1 WHERE Atualizacao IN (SELECT MAX(Atualizacao) FROM Dispositivo as T2 WHERE T1.Id = T2.Id)) AS Dispositivo  ON Usuario.Dispositivo = Dispositivo.Id WHERE IdProprietario=?', 
                         [id], function(err, rows2, fields) { 
                         if (err) {
                             console.log(err);
