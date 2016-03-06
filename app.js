@@ -38,18 +38,19 @@ function iniciarServidor(local) {
 /* Inicializa o Apple Notification */
 function iniciarApn() {
     //Inicializa o objeto para envio de push de produção
-    var opcoes = { cert: "certificados/apn-cert-producao.pem", 
+    var opcoes = { cert: "certificados/apn-cert-producao.pem", interval: 10,
         key: "certificados/apn-key-producao.pem", production: true };
     var apnProducao = new apn.Connection(opcoes); 
+    var feedbackProducao = new apn.Feedback(opcoes);
+
     //Inicializa o objeto para o envio de push de modo de desenvolvimento
     opcoes.cert = "certificados/apn-cert-desenvolvimento.pem";
     opcoes.key = "certificados/apn-key-desenvolvimento.pem";
     opcoes.production = false;
     var apnDesenvolvimento = new apn.Connection(opcoes); 
+    var feedbackDesenvolvimento = new apn.Feedback({ production: false, interval: 10 });
     
     //Feedback
-    var feedbackProducao = new apn.Feedback({ production: true, interval: 10 });
-    var feedbackDesenvolvimento = new apn.Feedback({ production: false, interval: 10 });
     var feedbackCallback = function(devices) {
         devices.forEach(function(item) {
             console.log("Dispositivo: " + item.device.toString("hex") + " inalcansável desde: " + 
