@@ -35,7 +35,7 @@ function atualizarDispositivo(req, res) {
     
     //Prepara as queries
     var queryInserir = "INSERT INTO Dispositivo SET ?;"
-    var queryPush = "SELECT DISTINCT Push FROM Associacao RIGHT JOIN Sessao ON Associacao.IdProprietario = Sessao.Usuario LEFT JOIN Usuario ON Usuario.ID = Associacao.IdProprietario WHERE IDAssociado = ?;";
+    var queryPush = "SELECT DISTINCT Push FROM Associacao RIGHT JOIN Sessao ON Associacao.IdProprietario = Sessao.Usuario LEFT JOIN Usuario ON Usuario.ID = Associacao.IdProprietario WHERE Usuario.Dispositivo = ?;";
     
     //Chama a query SQL
     db.query(queryInserir + queryPush, [inserir, id], 
@@ -46,7 +46,7 @@ function atualizarDispositivo(req, res) {
         }
         else {
             res.json({ok: true});
-            console.log(id + " - " + rows[1]);
+            console.log(rows[1]);
         }
     });
 
