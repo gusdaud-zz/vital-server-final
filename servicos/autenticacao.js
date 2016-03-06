@@ -108,7 +108,8 @@ function retornarUsuario(id, token, req, res) {
         function(err, rows, fields) {
             if (!err) { 
                 if (rows.length > 0)
-                    //Se tudo funcionar bem, procura por todos os usuários associados
+                    //Se tudo funcionar bem, procura por todos os usuários associados e obtém a geolocalização
+                    //e bateria
                     db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome, ' + 
                              'associacao.IdAssociado as idassociado, (associacao.Aprovado = 1) as aprovado, ' +
                              'associacao.Id as id, IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave, ' + 
