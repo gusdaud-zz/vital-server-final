@@ -53,7 +53,8 @@ function atualizarDispositivo(req, res) {
             for (var i in rows[1]) {
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
                     "content-available": 1, payload: { 'tipo': "geolocalizacao", 'id': rows[1][i].Id,
-                    'latitude': req.body.latitude, 'longitude': req.body.longitude }}, rows[1][i].Push);
+                    'latitude': req.body.latitude, 'longitude': req.body.longitude,
+                    'bateria': req.body.bateria }}, rows[1][i].Push);
             }
         }
     });
