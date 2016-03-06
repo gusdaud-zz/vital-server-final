@@ -135,7 +135,7 @@ function retornarUsuario(id, token, req, res) {
                             //Retorna os dados 
                             res.json({ok: true, token: token, 
                                 usuario: {Telefone: rows[0].Telefone, Nome: rows[0].Nome, Sobrenome: rows[0].Sobrenome, 
-                                    Email: rows[0].Email, Id: rows[0].Id, associacoes: associacoes}})
+                                    Email: rows[0].Email, Id: rows[0].Id, Associacoes: associacoes}})
                         }
                         
                     })
