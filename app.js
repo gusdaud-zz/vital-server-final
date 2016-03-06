@@ -48,8 +48,8 @@ function iniciarApn() {
     var apnDesenvolvimento = new apn.Connection(opcoes); 
     
     //Feedback
-    var feedbackProducao = new apnProducao.Feedback({ production: true, interval: 10 });
-    var feedbackDesenvolvimento = new apnDesenvolvimento.Feedback({ production: false, interval: 10 });
+    var feedbackProducao = new apn.Feedback({ production: true, interval: 10 });
+    var feedbackDesenvolvimento = new apn.Feedback({ production: false, interval: 10 });
     var feedbackCallback = function(devices) {
         devices.forEach(function(item) {
             console.log("Dispositivo: " + item.device.toString("hex") + " inalcansável desde: " + 
