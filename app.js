@@ -73,6 +73,6 @@ var local = os.homedir().toLowerCase().indexOf("gusda") > 0;
 iniciarServidor(local);
 var apnConn = iniciarApn();
 db.iniciar(app);
-dispositivo.iniciar(app, db, express);
+dispositivo.iniciar(app, db, express, apnConn);
 autenticacao.iniciar(app, db);
 usuario.iniciar(app, db, express, apnConn);

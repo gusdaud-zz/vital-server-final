@@ -1,12 +1,13 @@
 /* Variáveis compartilhadas */
-var db;
+var db, apn;
 /* Módulos usados */
 var config = require("../configuracoes");
 
 /* Inicia os serviços de comunicação com dispositio */
-exports.iniciar = function(app, _db, express) {
-    //Salva a variável
+exports.iniciar = function(app, _db, express, _apn) {
+    //Salva as variáveis
     db = _db;
+    apn = _apn;
     //Registra os serviços
     app.post('/servicos/dispositivo/atualizar', atualizarDispositivo);
     //Agora e a cada 6 horas limpas as atualizações antigas
@@ -45,10 +46,12 @@ function atualizarDispositivo(req, res) {
             console.log(err);
         }
         else {
+            //Retorna que a atualização foi feita com sucesso
             res.json({ok: true});
-            console.log("Push para:");
+            //Notifica os usuário logados através de silent push
             for (var i in rows[1]) {
-                console.log(rows[1][i].Push);                
+                apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
+                    alert: mensagem, payload: { 'tipo': tipo, id: id }}, rows[1][i].Push);
             }
         }
     });
