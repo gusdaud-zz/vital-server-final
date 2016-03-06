@@ -115,7 +115,7 @@ function retornarUsuario(id, token, req, res) {
                         'dispositivo.Atualizacao as atualizacao, dispositivo.latitude as latitude, ' +
                         'dispositivo.longitude as longitude FROM associacao LEFT JOIN usuario ON ' +
                         'associacao.idAssociado = usuario.ID LEFT JOIN dispositivo ON dispositivo.Id = ' +
-                        '(SELECT Id FROM dispositivo WHERE dispositivo.Id = associacao.idAssociado ' +
+                        '(SELECT Id FROM dispositivo WHERE dispositivo.Id = usuario.dispositivo ' +
                         'ORDER BY Atualizacao DESC LIMIT 1) WHERE IdProprietario=?', 
                         [id], function(err, rows2, fields) { 
                         if (err) {
