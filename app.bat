@@ -9,5 +9,6 @@ GOTO :EOF
 
 echo --------- Atualizando codigo
 git pull vital master
+cls
 echo --------- Executando NodeJS em modo debug na porta 46979
 node --nolazy --debug=46979 app.js
