@@ -40,8 +40,10 @@ function atualizarDispositivo(req, res) {
     //Chama a query SQL
     db.query(queryInserir + queryPush, [inserir, id], 
         function(err, rows, fields) {
-        if (err) 
-            res.json({erro: "erroatualizar" })
+        if (err) {
+            res.json({erro: "erroatualizar" });
+            console.log(err);
+        }
         else {
             res.json({ok: true});
             console.log(rows);
