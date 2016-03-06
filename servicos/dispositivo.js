@@ -52,9 +52,13 @@ function atualizarDispositivo(req, res) {
             for (var i in rows[1]) {
                 var Push = rows[1][i].Push;
                 console.log(Push);
+                try {
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
                     "content-available": 1, payload: { 'tipo': "geolocalizacao", 'id': id,
                     'latitude': req.body.latitude, 'longitude': req.body.longitude }}, Push);
+               } catch (e) {
+                   console.log(e);
+               }
             }
         }
     });
