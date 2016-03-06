@@ -48,10 +48,12 @@ function atualizarDispositivo(req, res) {
         else {
             //Retorna que a atualização foi feita com sucesso
             res.json({ok: true});
-            //Notifica os usuário logados através de silent push
+            return;
+            //Notifica a nova localização aos usuário logados através de silent push
             for (var i in rows[1]) {
                 apn.pushNotification({expiry: Math.floor(Date.now() / 1000) + 3600, 
-                    alert: mensagem, payload: { 'tipo': tipo, id: id }}, rows[1][i].Push);
+                    "content-available": 1, payload: { 'tipo': "geolocalizacao", 'id': id,
+                    'latitude': req.body.latitude, 'longitude': req.body.longitude }}, rows[1][i].Push);
             }
         }
     });
