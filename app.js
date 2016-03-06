@@ -54,7 +54,7 @@ function iniciarApn() {
         devices.forEach(function(item) {
             console.log("Dispositivo: " + item.device.toString("hex") + " inalcansável desde: " + 
             item.time);
-        });
+        }); }
     feedbackProducao.on("feedback", feedbackCallback);
     feedbackDesenvolvimento.on("feedback", feedbackCallback);
     
