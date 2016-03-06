@@ -116,7 +116,7 @@ function retornarUsuario(id, token, req, res) {
                              'dispositivo.Atualizacao as atualizacao, dispositivo.latitude as latitude, ' +
                              'dispositivo.longitude as longitude, dispositivo.bateria as bateria FROM Associacao ' +
                              'RIGHT JOIN Usuario ON Associacao.IdAssociado = Usuario.Id ' +  
-                             'LEFT JOIN (SELECT Id, Atualizacao, Latitude, Longitude FROM Dispositivo ' + 
+                             'LEFT JOIN (SELECT Id, Atualizacao, Latitude, Longitude, Bateria FROM Dispositivo ' + 
                              'GROUP BY Id ORDER BY Atualizacao DESC) AS Dispositivo ' +
                              'ON Usuario.Dispositivo = Dispositivo.Id WHERE IdProprietario=1', 
                         [id], function(err, rows2, fields) { 
