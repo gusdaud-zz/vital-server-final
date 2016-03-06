@@ -110,13 +110,14 @@ function retornarUsuario(id, token, req, res) {
                 if (rows.length > 0)
                     //Se tudo funcionar bem, procura por todos os usuários associados
                     db.query('SELECT IF(usuario.Nome IS NULL, associacao.NomeAssociado, usuario.Nome) as nome, ' + 
-                        'associacao.IdAssociado as idassociado, (associacao.Aprovado = 1) as aprovado, ' +
-                        'associacao.Id as id, IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave, ' +
-                        'dispositivo.Atualizacao as atualizacao, dispositivo.latitude as latitude, ' +
-                        'dispositivo.longitude as longitude FROM associacao LEFT JOIN usuario ON ' +
-                        'associacao.idAssociado = usuario.ID LEFT JOIN dispositivo ON dispositivo.Id = ' +
-                        '(SELECT Id FROM dispositivo WHERE dispositivo.Id = usuario.dispositivo ' +
-                        'ORDER BY Atualizacao DESC LIMIT 1) WHERE IdProprietario=?', 
+                             'associacao.IdAssociado as idassociado, (associacao.Aprovado = 1) as aprovado, ' +
+                             'associacao.Id as id, IF(associacao.aprovado = 1, NULL, associacao.ConviteChave) as chave, ' + 
+                             'dispositivo.Atualizacao as atualizacao, dispositivo.latitude as latitude, ' +
+                             'dispositivo.longitude as longitude FROM Associacao ' +
+                             'RIGHT JOIN Usuario ON Associacao.IdAssociado = Usuario.Id ' +  
+                             'LEFT JOIN (SELECT Id, Atualizacao, Latitude, Longitude FROM Dispositivo ' + 
+                             'GROUP BY Id ORDER BY Atualizacao DESC) AS Dispositivo ' +
+                             'ON Usuario.Dispositivo = Dispositivo.Id WHERE IdProprietario=1', 
                         [id], function(err, rows2, fields) { 
                         if (err) {
                             console.log(err);
